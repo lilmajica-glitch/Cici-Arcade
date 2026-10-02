@@ -1,9 +1,11 @@
+import { FOCUS_SCORE } from './score'
+
 export type AudioClock = { readonly currentTime: number; readonly state?: string }
 export type StepPlayer = (step: number, time: number, bpm: number) => void
 
 export class Sequencer {
-  bpm = 112
-  targetBpm = 112
+  bpm: number = FOCUS_SCORE.bpm
+  targetBpm: number = FOCUS_SCORE.bpm
   private step = 0
   private nextTime = 0
   private lastTick = 0
@@ -14,11 +16,11 @@ export class Sequencer {
 
   get running() { return this.timer !== null }
 
-  setTargetBpm(bpm: number) { this.targetBpm = Math.max(112, Math.min(128, bpm)) }
+  setTargetBpm(bpm: number) { if (Number.isFinite(bpm)) this.targetBpm = Math.max(96, Math.min(116, bpm)) }
 
   start(reset = true) {
     this.stop()
-    if (reset) { this.step = 0; this.bpm = 112 }
+    if (reset) { this.step = 0; this.bpm = FOCUS_SCORE.bpm; this.targetBpm = FOCUS_SCORE.bpm }
     this.nextTime = this.clock.currentTime + 0.04
     this.lastTick = this.clock.currentTime
     this.tick()

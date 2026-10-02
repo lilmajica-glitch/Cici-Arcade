@@ -1,5 +1,6 @@
 import { Mixer } from './Mixer'
 import type { AudioBus } from './Mixer'
+import { FOCUS_SCORE } from './score'
 
 export const midiHz = (midi: number) => 440 * 2 ** ((midi - 69) / 12)
 export const MAX_VOICES = 96
@@ -13,8 +14,15 @@ type Tone = {
   attack?: number
   cutoff?: number
   slideTo?: number
+  slideDuration?: number
   pan?: number
   detune?: number
+  body?: number
+}
+
+export function seededNoise(seed: number) {
+  let state = seed >>> 0
+  return () => { state = (Math.imul(state, 1664525) + 1013904223) >>> 0; return state / 0x1_0000_0000 * 2 - 1 }
 }
 
 export class Synth {
@@ -24,7 +32,8 @@ export class Synth {
   constructor(readonly context: BaseAudioContext, private mixer: Mixer) {
     this.noiseBuffer = context.createBuffer(1, Math.floor(context.sampleRate * 0.5), context.sampleRate)
     const data = this.noiseBuffer.getChannelData(0)
-    for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1
+    const random = seededNoise(FOCUS_SCORE.seed)
+    for (let i = 0; i < data.length; i++) data[i] = random()
   }
 
   get activeVoices() { return this.sources.size }
@@ -35,12 +44,12 @@ export class Synth {
     source.type = options.type ?? 'sine'
     source.detune.value = options.detune ?? 0
     source.frequency.setValueAtTime(options.frequency, t)
-    if (options.slideTo) source.frequency.exponentialRampToValueAtTime(options.slideTo, t + options.duration * 0.7)
+    if (options.slideTo) source.frequency.exponentialRampToValueAtTime(options.slideTo, t + (options.slideDuration ?? options.duration * 0.7))
     const filter = this.context.createBiquadFilter()
     filter.type = 'lowpass'
     filter.frequency.value = options.cutoff ?? 7500
     filter.Q.value = 0.5
-    const gain = this.envelope(t, options.duration, options.volume, options.attack ?? 0.006)
+    const gain = this.envelope(t, options.duration, options.volume, options.attack ?? 0.006, options.body)
     const panner = this.context.createStereoPanner()
     panner.pan.value = options.pan ?? 0
     source.connect(filter)
@@ -52,15 +61,16 @@ export class Synth {
     source.stop(t + options.duration + 0.035)
   }
 
-  private envelope(time: number, duration: number, volume: number, attack: number) {
+  private envelope(time: number, duration: number, volume: number, attack: number, body?: number) {
     const gain = this.context.createGain()
     gain.gain.setValueAtTime(0.0001, time)
     gain.gain.linearRampToValueAtTime(Math.max(0.0001, volume), time + attack)
+    if (body) gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, volume * body), time + Math.max(attack + 0.01, duration * 0.7))
     gain.gain.exponentialRampToValueAtTime(0.0001, time + Math.max(duration, attack + 0.015))
     return gain
   }
 
-  private noise(time: number, duration: number, volume: number, frequency: number, type: BiquadFilterType, bus: AudioBus, sweepTo?: number, attack = 0.003) {
+  private noise(time: number, duration: number, volume: number, frequency: number, type: BiquadFilterType, bus: AudioBus, sweepTo?: number, attack = 0.003, pan = 0) {
     const t = Math.max(time, this.context.currentTime)
     const source = this.context.createBufferSource()
     source.buffer = this.noiseBuffer
@@ -73,15 +83,22 @@ export class Synth {
     const gain = this.envelope(t, duration, volume, attack)
     source.connect(filter)
     filter.connect(gain)
-    gain.connect(this.mixer.bus(bus))
-    this.track(source, [filter, gain])
-    source.start(t)
+    const panner = this.context.createStereoPanner()
+    panner.pan.value = pan
+    gain.connect(panner)
+    panner.connect(this.mixer.bus(bus))
+    this.track(source, [filter, gain, panner])
+    // Rotate through a seeded buffer without changing the rendered score between runs.
+    source.start(t, (t * 0.137) % 0.4)
     source.stop(t + duration + 0.035)
     return source
   }
 
   private track(source: AudioScheduledSourceNode, nodes: AudioNode[]) {
-    if (this.sources.size >= MAX_VOICES) {
+    // Offline scheduling queues future events before time advances. The live cap
+    // must not truncate that queue; the offline render has a bounded duration.
+    const offline = typeof OfflineAudioContext !== 'undefined' && this.context instanceof OfflineAudioContext
+    if (!offline && this.sources.size >= MAX_VOICES) {
       const oldest = this.sources.values().next().value
       if (oldest) { try { oldest.stop() } catch { /* already ended */ } this.sources.delete(oldest) }
     }
@@ -94,22 +111,54 @@ export class Synth {
     }
   }
 
-  kick(time: number, volume = 0.52) {
-    this.tone(time, { frequency: 148, slideTo: 43, duration: 0.29, volume, bus: 'music', cutoff: 1800 })
+  kick(time: number, volume = 0.62) {
+    this.tone(time, { frequency: 156, slideTo: 48, slideDuration: 0.045, duration: 0.27, volume, attack: 0.003, body: 0.04, bus: 'music', cutoff: 1200 })
+    this.tone(time, { frequency: 760, slideTo: 145, duration: 0.022, volume: volume * 0.075, bus: 'music', cutoff: 1300 })
   }
 
-  snare(time: number) {
-    this.noise(time, 0.14, 0.15, 1850, 'bandpass', 'music')
-    this.tone(time, { frequency: 176, type: 'triangle', slideTo: 110, duration: 0.08, volume: 0.055, bus: 'music', cutoff: 1400 })
+  snare(time: number, velocity = 1) {
+    this.noise(time, 0.125, 0.17 * velocity, 1650, 'bandpass', 'music', undefined, 0.004, 0.06)
+    this.noise(time + 0.013, 0.065, 0.06 * velocity, 2300, 'bandpass', 'music')
+    this.tone(time, { frequency: 184, type: 'triangle', slideTo: 125, duration: 0.095, volume: 0.08 * velocity, bus: 'music', cutoff: 1200 })
   }
 
-  hat(time: number, offbeat = false) {
-    this.noise(time, offbeat ? 0.055 : 0.038, offbeat ? 0.044 : 0.028, 6500, 'highpass', 'music')
+  hat(time: number, offbeat = false, velocity = 1, pan = -0.12) {
+    this.noise(time, offbeat ? 0.085 : 0.042, (offbeat ? 0.043 : 0.038) * velocity, 5100, 'bandpass', 'music', undefined, 0.003, pan)
   }
 
-  bass(time: number, midi: number, duration = 0.24) {
-    this.tone(time, { frequency: midiHz(midi), type: 'triangle', duration, volume: 0.22, bus: 'music', cutoff: 600 })
-    this.tone(time, { frequency: midiHz(midi) / 2, duration, volume: 0.085, bus: 'music', cutoff: 400 })
+  bass(time: number, midi: number, duration = 0.24, velocity = 1) {
+    this.tone(time, { frequency: midiHz(midi), type: 'triangle', duration, attack: 0.012, body: 0.16, volume: 0.25 * velocity, bus: 'music', cutoff: 650 })
+    // An audible second harmonic carries the groove on small phone/tablet speakers.
+    this.tone(time, { frequency: midiHz(midi + 12), duration: duration * 0.8, volume: 0.085 * velocity, bus: 'music', cutoff: 700 })
+  }
+
+  keys(time: number, midi: number, volume = 0.07, duration = 0.6, pan = 0) {
+    const t = Math.max(time, this.context.currentTime)
+    const frequency = midiHz(midi)
+    const carrier = this.context.createOscillator()
+    const modulator = this.context.createOscillator()
+    const modulation = this.envelope(t, duration * 0.5, frequency * 0.8, 0.008)
+    carrier.frequency.value = frequency
+    modulator.frequency.value = frequency * 2
+    modulator.connect(modulation)
+    modulation.connect(carrier.frequency)
+    const filter = this.context.createBiquadFilter()
+    filter.type = 'lowpass'; filter.frequency.value = 2800; filter.Q.value = 0.4
+    const gain = this.envelope(t, duration, volume, 0.008, 0.12)
+    const panner = this.context.createStereoPanner()
+    panner.pan.value = pan
+    carrier.connect(filter); filter.connect(gain); gain.connect(panner)
+    panner.connect(this.mixer.bus('music'))
+    panner.connect(this.mixer.room)
+    this.track(carrier, [filter, gain, panner])
+    this.track(modulator, [modulation])
+    carrier.start(t); modulator.start(t)
+    carrier.stop(t + duration + 0.035); modulator.stop(t + duration + 0.035)
+  }
+
+  percussion(time: number, velocity = 1, pan = 0.2) {
+    this.noise(time, 0.045, 0.024 * velocity, 3100, 'bandpass', 'music', undefined, 0.005, pan)
+    this.tone(time, { frequency: 940, slideTo: 760, duration: 0.03, volume: 0.017 * velocity, bus: 'music', cutoff: 1700, pan })
   }
 
   pluck(time: number, midi: number, bus: AudioBus = 'music', volume = 0.12, duration = 0.3, pan = 0) {

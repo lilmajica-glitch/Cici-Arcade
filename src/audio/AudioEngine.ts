@@ -10,6 +10,7 @@ export class AudioEngine {
   private music: MusicEngine | null = null
   private effects: SFX | null = null
   private muted = false
+  private musicVolume = 0.75
   private shouldPlay = false
 
   /** This method is invoked synchronously in the start-button gesture. */
@@ -23,7 +24,8 @@ export class AudioEngine {
         this.synth = new Synth(this.context, this.mixer)
         this.music = new MusicEngine(this.context, this.synth, this.mixer)
         this.effects = new SFX(this.context, this.synth, this.mixer)
-        this.mixer.setMuted(this.muted)
+        this.mixer.setMuted(this.muted, true)
+        this.mixer.setMusicVolume(this.musicVolume)
       }
       if (this.context.state === 'suspended') await this.context.resume()
       return this.context.state === 'running'
@@ -31,6 +33,7 @@ export class AudioEngine {
   }
 
   setMuted(muted: boolean) { this.muted = muted; this.mixer?.setMuted(muted) }
+  setMusicVolume(level: number) { if (Number.isFinite(level)) { this.musicVolume = Math.max(0, Math.min(1, level)); this.mixer?.setMusicVolume(this.musicVolume) } }
   start() { this.shouldPlay = true; this.music?.start(); this.effects?.start() }
   stop() { this.shouldPlay = false; this.music?.stop() }
   progress(index: number, total: number) { this.music?.setProgress(index, total) }

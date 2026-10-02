@@ -4,6 +4,11 @@ export class Mixer {
   readonly music: GainNode
   readonly sfx: GainNode
   readonly master: GainNode
+  readonly room: GainNode
+  private roomDelay: DelayNode
+  private roomFilter: BiquadFilterNode
+  private musicLevel = 0.62
+  private musicAudible = true
   private duck: GainNode
   private compressor: DynamicsCompressorNode
   private limiter: DynamicsCompressorNode
@@ -13,9 +18,20 @@ export class Mixer {
     this.sfx = context.createGain()
     this.master = context.createGain()
     this.duck = context.createGain()
-    this.music.gain.value = 0.68
+    this.music.gain.value = this.musicLevel
     this.sfx.gain.value = 0.8
     this.master.gain.value = 0.65
+    // One quiet, filtered reflection on keys only; percussion keeps its transients.
+    this.room = context.createGain()
+    this.room.gain.value = 0.13
+    this.roomDelay = context.createDelay(0.3)
+    this.roomDelay.delayTime.value = 0.115
+    this.roomFilter = context.createBiquadFilter()
+    this.roomFilter.type = 'lowpass'
+    this.roomFilter.frequency.value = 1800
+    this.room.connect(this.roomDelay)
+    this.roomDelay.connect(this.roomFilter)
+    this.roomFilter.connect(this.music)
     this.compressor = context.createDynamicsCompressor()
     Object.assign(this.compressor.threshold, { value: -15 })
     this.compressor.knee.value = 12
@@ -38,16 +54,27 @@ export class Mixer {
 
   bus(name: AudioBus): GainNode { return this[name] }
 
-  setMuted(muted: boolean) {
+  setMuted(muted: boolean, immediate = false) {
     const time = this.context.currentTime
+    const current = this.master.gain.value
     this.master.gain.cancelScheduledValues(time)
-    this.master.gain.setTargetAtTime(muted ? 0 : 0.65, time, 0.018)
+    this.master.gain.setValueAtTime(immediate ? (muted ? 0 : 0.65) : current, time)
+    if (!immediate) this.master.gain.linearRampToValueAtTime(muted ? 0 : 0.65, time + 0.035)
   }
 
   setMusicAudible(audible: boolean) {
+    this.musicAudible = audible
     const time = this.context.currentTime
+    const current = this.music.gain.value
     this.music.gain.cancelScheduledValues(time)
-    this.music.gain.setTargetAtTime(audible ? 0.68 : 0, time, 0.025)
+    this.music.gain.setValueAtTime(current, time)
+    this.music.gain.linearRampToValueAtTime(audible ? this.musicLevel : 0, time + 0.05)
+  }
+
+  setMusicVolume(level: number) {
+    if (!Number.isFinite(level)) return
+    this.musicLevel = Math.max(0, Math.min(1, level)) * 0.62
+    this.setMusicAudible(this.musicAudible)
   }
 
   accent(time: number, depth = 0.7) {
@@ -57,6 +84,6 @@ export class Mixer {
   }
 
   dispose() {
-    for (const node of [this.music, this.sfx, this.duck, this.master, this.compressor, this.limiter]) node.disconnect()
+    for (const node of [this.music, this.sfx, this.duck, this.master, this.compressor, this.limiter, this.room, this.roomDelay, this.roomFilter]) node.disconnect()
   }
 }

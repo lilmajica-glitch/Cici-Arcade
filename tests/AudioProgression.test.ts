@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { musicProgression } from '../src/audio/progression'
 import { NUMBER_NOTES } from '../src/audio/SFX'
 import { Sequencer } from '../src/audio/Sequencer'
+import { FOCUS_SCORE } from '../src/audio/score'
 
 afterEach(() => vi.useRealTimers())
 
@@ -13,17 +14,15 @@ describe('Progressive music', () => {
       expect(stage.stage).toBe(i + 1)
       if (i > 0) for (const layer of musicProgression(boundaries[i - 1]).layers) expect(stage.layers).toContain(layer)
     })
-    expect(musicProgression(0).layers).toEqual(['kick'])
+    expect(musicProgression(0).layers).toEqual(['kick', 'hat', 'bass', 'chord'])
     expect(musicProgression(17).layers).toContain('lead')
     expect(musicProgression(19).finalQuestion).toBe(true)
     expect(musicProgression(18).finalQuestion).toBe(false)
   })
-  it('targets 112 to 128 BPM based on progress, independent of combo or misses', () => {
-    expect(musicProgression(0).bpm).toBe(112)
-    expect(musicProgression(10).bpm).toBe(120)
-    expect(musicProgression(20).bpm).toBe(128)
-    expect(musicProgression(-1).bpm).toBe(112)
-    expect(musicProgression(30).bpm).toBe(128)
+  it('keeps a stable tempo for the whole session, including the final question', () => {
+    for (let index = -1; index <= 30; index++) expect(musicProgression(index).bpm).toBe(FOCUS_SCORE.bpm)
+    expect(musicProgression(0, 0).progress).toBe(0)
+    expect(musicProgression(NaN).progress).toBe(0)
   })
   it('maps ten digit pads to the required five-note scale', () => {
     expect(NUMBER_NOTES).toEqual({ '1': 60, '2': 62, '3': 64, '4': 67, '5': 69, '6': 72, '7': 74, '8': 76, '9': 79, '0': 81 })
@@ -39,13 +38,13 @@ describe('Sequencer', () => {
     const sequence = new Sequencer(clock, (_, time) => notes.push(time))
     sequence.start()
     expect(notes[0]).toBeCloseTo(0.04)
-    sequence.setTargetBpm(128)
+    sequence.setTargetBpm(116)
     clock.currentTime = 0.025
     sequence.tick()
-    expect(sequence.bpm).toBeGreaterThan(112)
-    expect(sequence.bpm).toBeLessThan(113)
+    expect(sequence.bpm).toBeGreaterThan(108)
+    expect(sequence.bpm).toBeLessThan(109)
     for (let i = 1; i <= 200; i++) { clock.currentTime += 0.025; sequence.tick() }
-    expect(sequence.bpm).toBeGreaterThan(127)
+    expect(sequence.bpm).toBeGreaterThan(115)
     expect(notes.every((t, i) => i === 0 || t > notes[i - 1])).toBe(true)
     sequence.stop()
     expect(vi.getTimerCount()).toBe(0)

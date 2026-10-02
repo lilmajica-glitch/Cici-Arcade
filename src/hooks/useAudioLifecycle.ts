@@ -5,8 +5,10 @@ import { preferencesStore } from '../game/preferencesStore'
 export function useAudioLifecycle() {
   useEffect(() => {
     audioEngine.setMuted(preferencesStore.getState().muted)
+    audioEngine.setMusicVolume(preferencesStore.getState().musicVolume)
     const unsubscribe = preferencesStore.subscribe((state, previous) => {
       if (state.muted !== previous.muted) audioEngine.setMuted(state.muted)
+      if (state.musicVolume !== previous.musicVolume) audioEngine.setMusicVolume(state.musicVolume)
     })
     const onVisibility = () => {
       if (document.hidden) void audioEngine.suspend()

@@ -19,7 +19,7 @@ beforeEach(() => {
   data = new Map()
   vi.stubGlobal('localStorage', { getItem: (key: string) => data.get(key) ?? null, setItem: (key: string, value: string) => data.set(key, value) })
   gameStore.setState(initialGameState(), true)
-  preferencesStore.setState({ muted: false, reducedMotion: false, audioStatus: 'idle' })
+  preferencesStore.setState({ muted: false, musicVolume: 0.75, reducedMotion: false, audioStatus: 'idle' })
   controller = new GameController()
 })
 afterEach(() => { controller.dispose(); vi.useRealTimers(); vi.unstubAllGlobals() })

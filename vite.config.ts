@@ -4,6 +4,6 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: { port: 5173, strictPort: true },
-  build: { target: 'es2022' },
+  build: { target: 'es2022', rolldownOptions: { input: { game: 'index.html', audition: 'music-preview.html' } } },
   test: { include: ['tests/**/*.test.ts'], environment: 'node' },
 })

@@ -15,6 +15,7 @@ export function MenuScreen() {
     <button ref={start} type="button" className="start-button" onClick={() => gameController.start()}><Icon name="bolt" size={23} /><span>开始游戏</span><i><Icon name="arrow" size={22} /></i></button>
     <div className="play-recipe"><span><i className="mini-key">7</i>输入答案</span><b aria-hidden="true">→</b><span><Icon name="check" size={18} />按 ✓ 发射</span></div>
     <div className="menu-fineprint">20 以内加减法 <span>·</span> 不计时 <span>·</span> 答错再试</div>
+    <a className="music-preview-link" href="./music-preview.html"><Icon name="note" size={13} />试听新配乐 · 向前一点</a>
     {stats.gamesPlayed > 0 ? <div className="personal-best">你的最佳连击 ×{stats.bestCombo} <span>·</span> 已完成 {stats.gamesPlayed} 局</div> : null}
   </div>
 }

@@ -5,6 +5,7 @@ import { useGameInput } from './hooks/useGameInput'
 import { useAudioLifecycle } from './hooks/useAudioLifecycle'
 import { GameScreen } from './components/GameScreen'
 import { Icon } from './components/Icon'
+import { MusicVolume } from './components/MusicVolume'
 import './styles/tokens.css'
 import './styles/game.css'
 import './styles/scene.css'
@@ -23,6 +24,7 @@ export default function App() {
     <header className="site-header">
       <div className="wordmark" aria-label="Cici 小博士"><span className="wordmark-icon"><Icon name="flask" size={26} /></span><span className="wordmark-name">cici</span><span className="wordmark-chinese">小博士</span></div>
       <div className="header-actions">
+        <MusicVolume />
         <button className="preference-button" type="button" aria-label={muted ? '开启声音' : '静音'} aria-pressed={muted} title={muted ? '开启声音' : '静音'} onClick={() => preferencesStore.setState({ muted: !muted })}><Icon name={muted ? 'mute' : 'sound'} size={18} /><span>{muted ? '声音已关' : '声音开启'}</span></button>
         <button className="preference-button" type="button" aria-label="减少动态效果" aria-pressed={reduced} title="减少动态效果" onClick={() => preferencesStore.setState({ reducedMotion: !reduced })}><Icon name="motion" size={18} /><span>减少动态</span></button>
       </div>

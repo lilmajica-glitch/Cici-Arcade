@@ -1,0 +1,332 @@
+{
+  "pass": true,
+  "bpm": 108,
+  "checks": {
+    "stage1": {
+      "pass": true,
+      "sampleRate": 48000,
+      "seconds": 19.778,
+      "peak": 0.296095,
+      "rms": 0.033673,
+      "dbfs": -29.45,
+      "finite": true,
+      "spreadDb": 0.76,
+      "tail": 0,
+      "windows": [
+        {
+          "peak": 0.296095,
+          "rms": 0.032736,
+          "dbfs": -29.7,
+          "finite": true
+        },
+        {
+          "peak": 0.242305,
+          "rms": 0.031806,
+          "dbfs": -29.95,
+          "finite": true
+        },
+        {
+          "peak": 0.295463,
+          "rms": 0.034721,
+          "dbfs": -29.19,
+          "finite": true
+        }
+      ]
+    },
+    "stage2": {
+      "pass": true,
+      "sampleRate": 48000,
+      "seconds": 19.778,
+      "peak": 0.296095,
+      "rms": 0.033716,
+      "dbfs": -29.44,
+      "finite": true,
+      "spreadDb": 0.75,
+      "tail": 0,
+      "windows": [
+        {
+          "peak": 0.296095,
+          "rms": 0.032789,
+          "dbfs": -29.69,
+          "finite": true
+        },
+        {
+          "peak": 0.242305,
+          "rms": 0.031863,
+          "dbfs": -29.93,
+          "finite": true
+        },
+        {
+          "peak": 0.295463,
+          "rms": 0.034772,
+          "dbfs": -29.18,
+          "finite": true
+        }
+      ]
+    },
+    "stage3": {
+      "pass": true,
+      "sampleRate": 48000,
+      "seconds": 19.778,
+      "peak": 0.292605,
+      "rms": 0.033915,
+      "dbfs": -29.39,
+      "finite": true,
+      "spreadDb": 0.65,
+      "tail": 0,
+      "windows": [
+        {
+          "peak": 0.292605,
+          "rms": 0.032807,
+          "dbfs": -29.68,
+          "finite": true
+        },
+        {
+          "peak": 0.24231,
+          "rms": 0.032463,
+          "dbfs": -29.77,
+          "finite": true
+        },
+        {
+          "peak": 0.291121,
+          "rms": 0.03498,
+          "dbfs": -29.12,
+          "finite": true
+        }
+      ]
+    },
+    "stage4": {
+      "pass": true,
+      "sampleRate": 48000,
+      "seconds": 19.778,
+      "peak": 0.292605,
+      "rms": 0.033916,
+      "dbfs": -29.39,
+      "finite": true,
+      "spreadDb": 0.65,
+      "tail": 0,
+      "windows": [
+        {
+          "peak": 0.292605,
+          "rms": 0.032808,
+          "dbfs": -29.68,
+          "finite": true
+        },
+        {
+          "peak": 0.24231,
+          "rms": 0.032464,
+          "dbfs": -29.77,
+          "finite": true
+        },
+        {
+          "peak": 0.291121,
+          "rms": 0.034981,
+          "dbfs": -29.12,
+          "finite": true
+        }
+      ]
+    },
+    "stage5": {
+      "pass": true,
+      "sampleRate": 48000,
+      "seconds": 19.778,
+      "peak": 0.292605,
+      "rms": 0.033948,
+      "dbfs": -29.38,
+      "finite": true,
+      "spreadDb": 0.64,
+      "tail": 0,
+      "windows": [
+        {
+          "peak": 0.292605,
+          "rms": 0.032853,
+          "dbfs": -29.67,
+          "finite": true
+        },
+        {
+          "peak": 0.24231,
+          "rms": 0.032507,
+          "dbfs": -29.76,
+          "finite": true
+        },
+        {
+          "peak": 0.291121,
+          "rms": 0.034981,
+          "dbfs": -29.12,
+          "finite": true
+        }
+      ]
+    },
+    "stage6": {
+      "pass": true,
+      "sampleRate": 48000,
+      "seconds": 19.778,
+      "peak": 0.292605,
+      "rms": 0.034036,
+      "dbfs": -29.36,
+      "finite": true,
+      "spreadDb": 0.58,
+      "tail": 0,
+      "windows": [
+        {
+          "peak": 0.292605,
+          "rms": 0.03302,
+          "dbfs": -29.62,
+          "finite": true
+        },
+        {
+          "peak": 0.24231,
+          "rms": 0.032727,
+          "dbfs": -29.7,
+          "finite": true
+        },
+        {
+          "peak": 0.291121,
+          "rms": 0.034981,
+          "dbfs": -29.12,
+          "finite": true
+        }
+      ]
+    },
+    "stage6at44100": {
+      "pass": true,
+      "sampleRate": 44100,
+      "seconds": 19.778,
+      "peak": 0.29987,
+      "rms": 0.034065,
+      "dbfs": -29.35,
+      "finite": true,
+      "spreadDb": 0.67,
+      "tail": 0,
+      "windows": [
+        {
+          "peak": 0.266046,
+          "rms": 0.032788,
+          "dbfs": -29.69,
+          "finite": true
+        },
+        {
+          "peak": 0.246685,
+          "rms": 0.032696,
+          "dbfs": -29.71,
+          "finite": true
+        },
+        {
+          "peak": 0.29987,
+          "rms": 0.035331,
+          "dbfs": -29.04,
+          "finite": true
+        }
+      ]
+    },
+    "denseFeedback": {
+      "pass": true,
+      "sampleRate": 48000,
+      "seconds": 19.778,
+      "peak": 0.471242,
+      "rms": 0.046571,
+      "dbfs": -26.64,
+      "finite": true,
+      "spreadDb": 0.7,
+      "tail": 0,
+      "windows": [
+        {
+          "peak": 0.385957,
+          "rms": 0.043946,
+          "dbfs": -27.14,
+          "finite": true
+        },
+        {
+          "peak": 0.35809,
+          "rms": 0.04765,
+          "dbfs": -26.44,
+          "finite": true
+        },
+        {
+          "peak": 0.384131,
+          "rms": 0.046569,
+          "dbfs": -26.64,
+          "finite": true
+        }
+      ]
+    },
+    "muted": {
+      "pass": true,
+      "sampleRate": 48000,
+      "seconds": 19.778,
+      "peak": 0,
+      "rms": 0,
+      "dbfs": null,
+      "finite": true,
+      "spreadDb": 0,
+      "tail": 0,
+      "windows": [
+        {
+          "peak": 0,
+          "rms": 0,
+          "dbfs": null,
+          "finite": true
+        },
+        {
+          "peak": 0,
+          "rms": 0,
+          "dbfs": null,
+          "finite": true
+        },
+        {
+          "peak": 0,
+          "rms": 0,
+          "dbfs": null,
+          "finite": true
+        }
+      ]
+    },
+    "musicOffKeepsSfx": {
+      "pass": true,
+      "sampleRate": 48000,
+      "seconds": 19.778,
+      "peak": 0.026873,
+      "rms": 0.000797,
+      "dbfs": -61.97,
+      "finite": true,
+      "spreadDb": 0,
+      "tail": 0,
+      "windows": [
+        {
+          "peak": 0,
+          "rms": 0,
+          "dbfs": null,
+          "finite": true
+        },
+        {
+          "peak": 0,
+          "rms": 0,
+          "dbfs": null,
+          "finite": true
+        },
+        {
+          "peak": 0,
+          "rms": 0,
+          "dbfs": null,
+          "finite": true
+        }
+      ]
+    }
+  },
+  "preview": {
+    "peak": 0.393759,
+    "rms": 0.04679,
+    "dbfs": -26.6,
+    "finite": true,
+    "seconds": 54,
+    "sectionRms": [
+      0.049292,
+      0.044761,
+      0.049708,
+      0.044455,
+      0.049861,
+      0.044807
+    ],
+    "tail": 0
+  }
+}

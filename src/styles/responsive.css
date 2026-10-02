@@ -4,6 +4,7 @@
   .site-header { height: 60px; padding: 0 19px; }
   .wordmark { gap: 7px; }.wordmark-icon { width: 30px; height: 30px; border-radius: 10px; }.wordmark-icon svg { width: 20px; }.wordmark-name { font-size: 28px; }.wordmark-chinese { font-size: 12px; letter-spacing: 1px; }
   .header-actions { gap: 7px; }.preference-button { padding: 8px; width: 34px; height: 34px; justify-content: center; }.preference-button span { display: none; }.preference-button svg { width: 17px; }
+  .music-volume { font-size: 10px; gap: 3px; }.music-volume input { width: 43px; }
   .page-main { min-height: calc(100dvh - 90px); padding: 5px 16px 23px; }
   .game-cabinet { width: min(426px, calc(100vw - 32px)); padding: 16px 17px 20px; border-radius: 27px; }
   .cabinet-topline { padding-bottom: 10px; font-size: 9px; letter-spacing: 1px; }.cabinet-topline b { font-size: 9px; }
