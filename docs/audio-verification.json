@@ -1,0 +1,86 @@
+{
+  "pass": true,
+  "sampleRate": 48000,
+  "checks": {
+    "kick": {
+      "peak": 0.17511,
+      "rms": 0.01419,
+      "tail": 0
+    },
+    "hat": {
+      "peak": 0.01376,
+      "rms": 0.00033,
+      "tail": 0
+    },
+    "snare": {
+      "peak": 0.04471,
+      "rms": 0.00144,
+      "tail": 0
+    },
+    "bass": {
+      "peak": 0.08563,
+      "rms": 0.00518,
+      "tail": 0
+    },
+    "number": {
+      "peak": 0.02772,
+      "rms": 0.00247,
+      "tail": 0
+    },
+    "correct": {
+      "peak": 0.15038,
+      "rms": 0.00944,
+      "tail": 0
+    },
+    "wrong": {
+      "peak": 0.01257,
+      "rms": 0.00138,
+      "tail": 0
+    },
+    "pluck": {
+      "peak": 0.04938,
+      "rms": 0.00314,
+      "tail": 0
+    },
+    "pad": {
+      "peak": 0.02998,
+      "rms": 0.00377,
+      "tail": 0
+    },
+    "sparkle": {
+      "peak": 0.11854,
+      "rms": 0.01007,
+      "tail": 0
+    },
+    "impact": {
+      "peak": 0.09749,
+      "rms": 0.00673,
+      "tail": 0
+    },
+    "riser": {
+      "peak": 0.03758,
+      "rms": 0.00422,
+      "tail": 0
+    },
+    "swoosh": {
+      "peak": 0.01535,
+      "rms": 0.00069,
+      "tail": 0
+    },
+    "victory": {
+      "peak": 0.21011,
+      "rms": 0.02222,
+      "tail": 0
+    },
+    "fullMix": {
+      "peak": 0.22605,
+      "rms": 0.01883,
+      "tail": 0
+    },
+    "muted": {
+      "peak": 0,
+      "rms": 0,
+      "tail": 0
+    }
+  }
+}

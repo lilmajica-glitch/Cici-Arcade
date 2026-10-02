@@ -1,0 +1,29 @@
+@media (min-width: 1200px) { .page-main { padding-top: 0; } }
+@media (max-width: 1050px) { .desktop-note { display: none; } }
+@media (max-width: 600px) {
+  .site-header { height: 60px; padding: 0 19px; }
+  .wordmark { gap: 7px; }.wordmark-icon { width: 30px; height: 30px; border-radius: 10px; }.wordmark-icon svg { width: 20px; }.wordmark-name { font-size: 28px; }.wordmark-chinese { font-size: 12px; letter-spacing: 1px; }
+  .header-actions { gap: 7px; }.preference-button { padding: 8px; width: 34px; height: 34px; justify-content: center; }.preference-button span { display: none; }.preference-button svg { width: 17px; }
+  .page-main { min-height: calc(100dvh - 90px); padding: 5px 16px 23px; }
+  .game-cabinet { width: min(426px, calc(100vw - 32px)); padding: 16px 17px 20px; border-radius: 27px; }
+  .cabinet-topline { padding-bottom: 10px; font-size: 9px; letter-spacing: 1px; }.cabinet-topline b { font-size: 9px; }
+  .boss-stage { height: 140px; margin-top: 9px; }.doctor { width: 197px; height: 139px; left: calc(50% - 98.5px); bottom: -17px; }.boss-stage::before { width: 160px; height: 106px; top: 26px; }.boss-speech { font-size: 9px; padding: 4px 10px; }
+  .bubble-one { left: 20px; top: 45px; }.bubble-two { right: 19px; }
+  .question-machine { height: 160px; }.question-card { top: 62px; height: 69px; }.tongue { top: 62px; }.equation { font-size: 33px; gap: 9px; }.equation-op { font-size: 28px; }.answer-slot { min-width: 40px; height: 44px; }.has-answer { font-size: 30px; }
+  .menu-panel, .victory-panel { padding: 8px 5px 0; }.menu-panel h1 { font-size: 29px; }.menu-panel p { font-size: 12px; margin-bottom: 18px; }.menu-fineprint { font-size: 9px; }.start-button { min-height: 58px; font-size: 19px; }.play-recipe { margin-top: 22px; }
+  .number-pad { gap: 9px 10px; }.pad-button { height: 51px; border-radius: 15px; }.feedback-row { padding: 3px 4px 9px; }.feedback-message { font-size: 10px; }.combo-display { font-size: 9px; }
+  .progress-dots { gap: 3px; }.progress-dots i { width: 5px; height: 5px; }.progress-strip { padding-top: 17px; gap: 6px; }
+  .site-footer { height: 30px; font-size: 9px; letter-spacing: 1px; padding-bottom: max(12px, env(safe-area-inset-bottom)); }
+}
+@media (max-width: 360px) {
+  .game-cabinet { padding-inline: 12px; }.wordmark-chinese { font-size: 11px; }.site-header { padding-inline: 15px; }.equation { font-size: 29px; gap: 7px; }.equation-op { font-size: 25px; }.has-answer { font-size: 28px; }.is-message strong { font-size: 18px; }.card-ornament { display: none; }.progress-dots { gap: 2px; }
+}
+@media (max-height: 760px) {
+  .site-header { height: 55px; }.page-main { align-content: start; padding-top: 2px; min-height: calc(100dvh - 85px); }.cabinet-topline { padding-bottom: 8px; }.game-cabinet { padding-top: 12px; padding-bottom: 16px; }.boss-stage { height: 110px; margin-top: 7px; }.doctor { width: 153px; height: 108px; left: calc(50% - 76.5px); bottom: -18px; }.boss-stage::before { top: 23px; width: 136px; height: 82px; }.boss-speech { font-size: 9px; padding: 4px 10px; }.bubble-one { top: 29px; }.bubble-two { top: 64px; }.question-machine { height: 140px; }.question-card { top: 55px; height: 59px; }.tongue { top: 55px; height: 98px; }.equation { font-size: 30px; }.has-answer { font-size: 28px; }.answer-slot { height: 38px; }.menu-panel h1 { font-size: 26px; }.menu-panel p { margin-bottom: 14px; }.pad-button { height: 48px; }.pad-face b { font-size: 27px; }.number-pad { gap: 8px 10px; }.feedback-row { min-height: 30px; }.progress-strip { padding-top: 13px; }.play-recipe { margin: 20px 0 10px; }.victory-panel h1 { font-size: 25px; }.victory-stats { margin-bottom: 15px; }
+}
+@media (max-height: 700px) and (orientation: portrait) {
+  .site-header { height: 52px; }.page-main { min-height: calc(100dvh - 76px); padding-bottom: 12px; }.game-cabinet { padding-top: 9px; padding-bottom: 13px; }.cabinet-topline { padding-bottom: 6px; }.boss-stage { height: 86px; margin-top: 5px; }.doctor { width: 123px; height: 87px; left: calc(50% - 61.5px); bottom: -19px; }.boss-stage::before { width: 111px; height: 61px; top: 21px; }.boss-speech { font-size: 8px; padding: 3px 8px; }.bubble-one { width: 23px; height: 23px; top: 22px; }.bubble-two { top: 48px; }.question-machine { height: 118px; }.question-card { top: 47px; height: 50px; }.tongue { top: 45px; height: 92px; }.equation { font-size: 27px; gap: 8px; }.equation-op { font-size: 24px; }.has-answer { font-size: 25px; }.answer-slot { height: 32px; }.is-message strong { font-size: 18px; }.card-eyebrow { font-size: 8px; }.is-message { gap: 4px; }.machine-sticker { font-size: 6px; padding: 2px 6px; }.menu-panel h1 { font-size: 24px; }.menu-panel p { margin-bottom: 12px; font-size: 11px; }.feedback-row { min-height: 28px; }.progress-strip { padding-top: 11px; }.site-footer { height: 24px; font-size: 8px; }
+}
+@media (max-height: 640px) and (orientation: landscape) {
+  .site-header { max-width: 760px; }.page-main { padding-top: 10px; }.game-cabinet { width: 410px; }.site-footer { padding-top: 20px; height: 55px; }
+}

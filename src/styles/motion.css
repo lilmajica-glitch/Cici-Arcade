@@ -1,0 +1,74 @@
+.particle-canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 20; border-radius: inherit; }
+.combat-stage { transform-origin: 50% 35%; }
+.health-fill { transition: transform 300ms cubic-bezier(.2,.8,.2,1), background-color 300ms; }
+.pad-button { transition: transform 75ms ease-out, filter 100ms, opacity 100ms; }
+.pad-release { animation: pad-release 190ms ease-out; }
+.start-button { transition: background-color 150ms, transform 70ms, box-shadow 70ms; }
+.doctor-head { transform-origin: 160px 130px; }
+.doctor-hit { animation: boss-hit 400ms cubic-bezier(.2,.7,.2,1); }
+.doctor-hit.hit-strong { --hit-x: 11px; --hit-y: -11px; --hit-rotate: 12deg; }
+.doctor-hit .doctor-goggles { animation: goggles-wobble 380ms ease-out; }
+.doctor-hit .doctor-arm-left { animation: arm-flail-left 390ms ease-out; transform-origin: 108px 157px; }
+.doctor-hit .doctor-arm-right { animation: arm-flail-right 390ms ease-out; transform-origin: 213px 157px; }
+.doctor-hit::before { content: ''; position: absolute; width: 76px; height: 76px; left: 86px; top: 27px; border: 3px solid #f0cb68; border-radius: 50%; z-index: -1; animation: hit-ring 400ms ease-out forwards; }
+.damage-number { animation: damage-pop 420ms ease-out both; }
+.feedback-correct { animation: feedback-pop 300ms ease-out; }
+.feedback-wrong { animation: gentle-fade 200ms ease-out; }
+.combo-active { animation: combo-pop 270ms ease-out; }
+.machine-dispense .machine-body { animation: machine-anticipation 620ms ease-out; }
+.machine-dispense .tongue { animation: tongue-delivery 620ms cubic-bezier(.22,.7,.3,1) both; }
+.machine-dispense .card-enter { animation: card-delivery 620ms cubic-bezier(.22,.7,.3,1) both; }
+.machine-correct .question-card { border-color: #88ac73; box-shadow: 0 0 0 3px #cee2b7, 0 4px 0 #422f3b4d, inset 0 0 0 4px #e8f2d9; }
+.pad-correct .pad-submit { animation: confirm-glow 400ms ease-out; }
+.music-meter > i { transform-origin: bottom; transform: scaleY(calc(.84 + var(--beat, 0) * .25)); }
+.orbit-bubble { transform: scale(calc(1 + var(--beat, 0) * .06)); }
+.game-cabinet[data-music-stage="5"] .boss-stage::before, .game-cabinet[data-music-stage="6"] .boss-stage::before { background: #f1ebd2; border-color: #c6b880; }
+.game-cabinet[data-music-stage="6"] .orbit-bubble { background: #f5e2b0; color: #a98444; border-color: #ceba83; }
+.status-victory .victory-panel { animation: victory-settle 400ms ease-out; }
+
+@keyframes machine-anticipation {
+  0%, 17%, 100% { transform: translateX(0); }
+  5% { transform: translateX(-1.5px) rotate(-.6deg); }
+  10% { transform: translateX(1.5px) rotate(.6deg); }
+  25% { transform: scale(1.013,.99); }
+  43% { transform: scale(.995,1.01); }
+  62% { transform: scale(1); }
+}
+@keyframes tongue-delivery {
+  0%, 12% { transform: scaleY(0); }
+  30% { transform: scaleY(1.09); }
+  45%, 62% { transform: scaleY(1); }
+  100% { transform: scaleY(0); }
+}
+@keyframes card-delivery {
+  0%, 20% { opacity: 0; transform: translateY(-15px) scale(.86); }
+  38% { opacity: 1; transform: translateY(27px) scale(1.025); }
+  59% { opacity: 1; transform: translateY(-2px) scale(.995); }
+  72%, 100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes boss-hit {
+  0% { transform: translate(0,0) rotate(0); }
+  9% { transform: translate(0,1px) scale(.99); }
+  24% { transform: translate(var(--hit-x, 7px),var(--hit-y, -8px)) rotate(var(--hit-rotate, 8deg)) scale(.96); }
+  53% { transform: translate(-3px,1px) rotate(-4deg) scale(1.02); }
+  78% { transform: translate(1px,-1px) rotate(2deg); }
+  100% { transform: translate(0,0) rotate(0); }
+}
+@keyframes goggles-wobble { 0% { transform: rotate(0); } 35% { transform: rotate(-19deg) translateY(5px); } 70% { transform: rotate(-8deg); } 100% { transform: rotate(-12deg) translateY(4px); } }
+@keyframes arm-flail-left { 0%,100% { transform: rotate(0); } 35% { transform: rotate(30deg); } 65% { transform: rotate(-9deg); } }
+@keyframes arm-flail-right { 0%,100% { transform: rotate(0); } 35% { transform: rotate(-30deg); } 65% { transform: rotate(9deg); } }
+@keyframes hit-ring { from { opacity: .8; transform: scale(.5); } to { opacity: 0; transform: scale(1.9); } }
+@keyframes damage-pop { 0% { opacity: 0; transform: translateY(8px) rotate(9deg) scale(.6); } 25% { opacity: 1; transform: translateY(-4px) rotate(9deg) scale(1.12); } 70% { opacity: 1; transform: translateY(-12px) rotate(9deg) scale(1); } 100% { opacity: 0; transform: translateY(-23px) rotate(9deg) scale(.95); } }
+@keyframes feedback-pop { 0% { transform: scale(.92); } 38% { transform: scale(1.07); } 100% { transform: scale(1); } }
+@keyframes combo-pop { 0% { transform: scale(.93); } 35% { transform: scale(1.15) rotate(-3deg); } 100% { transform: scale(1); } }
+@keyframes gentle-fade { from { opacity: .5; } to { opacity: 1; } }
+@keyframes pad-release { 0% { transform: scale(.94); } 45% { transform: scale(1.06); } 100% { transform: scale(1); } }
+@keyframes confirm-glow { 0%,100% { box-shadow: 0 5px 0 #2e513c; } 35% { box-shadow: 0 5px 0 #2e513c, 0 0 0 5px #c8dfab; } }
+@keyframes victory-settle { from { opacity: .5; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.reduced-motion *, .reduced-motion *::before, .reduced-motion *::after { animation: none !important; transition: none !important; }
+.reduced-motion .orbit-bubble, .reduced-motion .music-meter > i { transform: none; }
+.reduced-motion .particle-canvas { display: none; }
+.reduced-motion .damage-number { transform: none; font-size: 31px; }
+@media (prefers-reduced-motion: reduce) {
+  .app-shell:not(.motion-enabled) *, .app-shell:not(.motion-enabled) *::before, .app-shell:not(.motion-enabled) *::after { animation: none !important; transition: none !important; }
+}

@@ -1,0 +1,25 @@
+:root {
+  font-family: "Trebuchet MS", "Microsoft YaHei", "PingFang SC", "Yuanti SC", sans-serif;
+  color: #283e38;
+  background: #e7f2df;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  --ink: #283e38;
+  --muted: #617767;
+  --paper: #f6faef;
+  --lab: #e7f2df;
+  --mint: #82bca4;
+  --green: #49745b;
+  --coral: #e98975;
+  --yellow: #f0cb68;
+  --lavender: #b5a0d5;
+  --font-number: "Trebuchet MS", "Arial Rounded MT Bold", sans-serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 300px; }
+button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+button:disabled { cursor: default; }
+button:focus-visible, [tabindex]:focus-visible { outline: 3px solid #365f86; outline-offset: 5px; }
+button svg { flex-shrink: 0; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
