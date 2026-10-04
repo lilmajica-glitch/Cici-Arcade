@@ -29,6 +29,18 @@ npm run preview
 
 产物在 `dist/`，可以部署到提供静态文件的站点。当前未发布到公网。
 
+## 单词跑酷
+
+同仓库还包含 Neon Word Runner，位于 [`neon-word-runner/`](./neon-word-runner/README.md)。需要 Node.js ≥ 22.12。在仓库根目录运行：
+
+```powershell
+cd neon-word-runner
+npm ci
+npm run dev
+```
+
+按终端显示的地址打开游戏。
+
 ## 操作
 
 - 点击「开始挑战」，从左到右喂入答案数字，末位正确后自动完成本题。
