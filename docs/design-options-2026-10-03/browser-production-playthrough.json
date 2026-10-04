@@ -1,0 +1,89 @@
+[
+  {
+    "question": "6-3",
+    "hp": 95,
+    "interaction": "wrong digit, immediate retry with keyboard; reduced motion enabled"
+  },
+  {
+    "question": "10-5",
+    "hp": 90
+  },
+  {
+    "question": "7+3",
+    "hp": 85
+  },
+  {
+    "question": "2+3",
+    "hp": 80
+  },
+  {
+    "question": "5-1",
+    "hp": 75
+  },
+  {
+    "question": "20-15",
+    "hp": 70
+  },
+  {
+    "question": "3+7",
+    "hp": 65
+  },
+  {
+    "question": "14-1",
+    "hp": 60
+  },
+  {
+    "question": "15-13",
+    "hp": 55
+  },
+  {
+    "question": "10-6",
+    "hp": 50
+  },
+  {
+    "question": "1+17",
+    "hp": 45
+  },
+  {
+    "question": "16-11",
+    "hp": 40
+  },
+  {
+    "question": "10+2",
+    "hp": 35
+  },
+  {
+    "question": "15+3",
+    "hp": 30
+  },
+  {
+    "question": "16+3",
+    "answer": "19",
+    "hp": 25
+  },
+  {
+    "question": "4+4",
+    "answer": "8",
+    "hp": 20
+  },
+  {
+    "question": "12-8",
+    "answer": "4",
+    "hp": 15
+  },
+  {
+    "question": "1+9",
+    "answer": "10",
+    "hp": 10
+  },
+  {
+    "question": "10+1",
+    "answer": "11",
+    "hp": 5
+  },
+  {
+    "question": "8-5",
+    "answer": "3",
+    "hp": 0
+  }
+]

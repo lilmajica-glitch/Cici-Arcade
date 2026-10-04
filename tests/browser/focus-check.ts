@@ -1,7 +1,9 @@
 import { arrangeStep, playMusicEvents } from '../../src/audio/arrangement'
 import { Mixer } from '../../src/audio/Mixer'
 import { encodeWav, renderPreview } from '../../src/audio/preview'
-import { FOCUS_SCORE } from '../../src/audio/score'
+import { MUSIC_TRACKS } from '../../src/audio/tracks'
+import type { MusicTrack } from '../../src/audio/tracks'
+import { previewTiming } from '../../src/audio/preview'
 import { SFX } from '../../src/audio/SFX'
 import { Synth } from '../../src/audio/Synth'
 
@@ -22,8 +24,8 @@ function measure(buffer: AudioBuffer, from = 0, to = buffer.duration) {
   return { peak: +peak.toFixed(6), rms: +rms.toFixed(6), dbfs: rms > 0 ? +(20 * Math.log10(rms)).toFixed(2) : null, finite }
 }
 
-async function render(stage: number, sampleRate = 48000, mode: 'normal' | 'stress' | 'muted' | 'musicOff' = 'normal') {
-  const songSeconds = 8 * 4 * 60 / FOCUS_SCORE.bpm
+async function render(track: MusicTrack, stage: number, sampleRate = 48000, mode: 'normal' | 'stress' | 'muted' | 'musicOff' = 'normal') {
+  const songSeconds = track.bars * 4 * 60 / track.bpm
   const context = new OfflineAudioContext(2, Math.ceil((songSeconds + 2) * sampleRate), sampleRate)
   const mixer = new Mixer(context)
   mixer.setMusicVolume(mode === 'musicOff' ? 0 : mode === 'stress' ? 1 : 0.75)
@@ -31,9 +33,9 @@ async function render(stage: number, sampleRate = 48000, mode: 'normal' | 'stres
   const synth = new Synth(context, mixer)
   const sfx = new SFX(context, synth, mixer)
   try {
-    for (let step = 0; step < 128; step++) {
-      const time = 0.1 + step * 60 / FOCUS_SCORE.bpm / 4
-      playMusicEvents(synth, arrangeStep(step, time, FOCUS_SCORE.bpm, stage))
+    for (let step = 0; step < track.bars * 16; step++) {
+      const time = 0.1 + step * 60 / track.bpm / 4
+      playMusicEvents(synth, arrangeStep(step, time, track.bpm, stage, track))
     }
     if (mode === 'stress') for (const time of [4, 8, 12]) {
       synth.impact(time, 0.21)
@@ -42,7 +44,7 @@ async function render(stage: number, sampleRate = 48000, mode: 'normal' | 'stres
     }
     if (mode === 'musicOff') sfx.number('8')
     const buffer = await context.startRendering()
-    const windows = [measure(buffer, 1, 3), measure(buffer, 8, 10), measure(buffer, 14, 16)]
+    const windows = [0.05, 0.48, 0.86].map((fraction) => measure(buffer, songSeconds * fraction, songSeconds * fraction + 2))
     const tail = measure(buffer, buffer.duration - 0.1).peak
     const levels = windows.map((window) => window.dbfs ?? -120)
     const spreadDb = +(Math.max(...levels) - Math.min(...levels)).toFixed(2)
@@ -56,29 +58,36 @@ async function render(stage: number, sampleRate = 48000, mode: 'normal' | 'stres
 }
 
 button.addEventListener('click', async () => {
-  button.disabled = true; output.textContent = '正在真实渲染六阶段配乐…'
+  button.disabled = true; output.textContent = '正在真实渲染三首配乐…'
   try {
-    const checks: Record<string, Awaited<ReturnType<typeof render>>> = {}
-    for (let stage = 1; stage <= 6; stage++) {
-      checks[`stage${stage}`] = await render(stage)
-      output.textContent = `已渲染 ${stage}/6 阶段，继续检查混音与静音…`
+    const tracks = []
+    for (const track of MUSIC_TRACKS) {
+      const checks: Record<string, Awaited<ReturnType<typeof render>>> = {}
+      for (let stage = 1; stage <= 6; stage++) {
+        checks[`stage${stage}`] = await render(track, stage)
+        output.textContent = `《${track.title}》已渲染 ${stage}/6 阶段，继续检查混音与静音…`
+      }
+      checks.stage6at44100 = await render(track, 6, 44100)
+      checks.denseFeedback = await render(track, 6, 48000, 'stress')
+      checks.muted = await render(track, 6, 48000, 'muted')
+      checks.musicOffKeepsSfx = await render(track, 6, 48000, 'musicOff')
+      const preview = await renderPreview(48000, track)
+      const timing = previewTiming(track)
+      const sectionRms = Array.from({ length: 6 }, (_, i) => measure(preview, 0.06 + i * timing.sectionSeconds + 1, 0.06 + i * timing.sectionSeconds + 5).rms)
+      const previewResult = { ...measure(preview), seconds: preview.duration, sectionRms, tail: measure(preview, preview.duration - 0.04).peak }
+      const pass = Object.values(checks).every((check) => check.pass) && previewResult.seconds === timing.seconds && previewResult.peak < 0.95 && sectionRms.every((rms) => rms > 0.005) && previewResult.tail < 0.0001
+      tracks.push({ id: track.id, title: track.title, bpm: track.bpm, pass, checks, preview: previewResult })
+      if (track.id === 'focus') {
+        const fileUrl = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader()
+          reader.onload = () => resolve(String(reader.result))
+          reader.onerror = () => reject(reader.error)
+          reader.readAsDataURL(new Blob([encodeWav(preview)], { type: 'audio/wav' }))
+        })
+        download.href = fileUrl; download.hidden = false
+      }
     }
-    checks.stage6at44100 = await render(6, 44100)
-    checks.denseFeedback = await render(6, 48000, 'stress')
-    checks.muted = await render(6, 48000, 'muted')
-    checks.musicOffKeepsSfx = await render(6, 48000, 'musicOff')
-    const preview = await renderPreview()
-    const fileUrl = await new Promise<string>((resolve, reject) => {
-      const reader = new FileReader()
-      reader.onload = () => resolve(String(reader.result))
-      reader.onerror = () => reject(reader.error)
-      reader.readAsDataURL(new Blob([encodeWav(preview)], { type: 'audio/wav' }))
-    })
-    download.href = fileUrl; download.hidden = false
-    const sectionRms = Array.from({ length: 6 }, (_, i) => measure(preview, i * 8.888889 + 1, i * 8.888889 + 5).rms)
-    const previewResult = { ...measure(preview), seconds: preview.duration, sectionRms, tail: measure(preview, preview.duration - 0.04).peak }
-    const pass = Object.values(checks).every((check) => check.pass) && previewResult.peak < 0.95 && sectionRms.every((rms) => rms > 0.005) && previewResult.tail < 0.0001
-    output.textContent = JSON.stringify({ pass, bpm: FOCUS_SCORE.bpm, checks, preview: previewResult }, null, 2)
+    output.textContent = JSON.stringify({ pass: tracks.every((track) => track.pass), tracks }, null, 2)
   } catch (error) { output.textContent = `FAIL: ${String(error)}` }
   finally { button.disabled = false }
 })

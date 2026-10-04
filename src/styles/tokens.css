@@ -15,7 +15,24 @@
   --yellow: #f0cb68;
   --lavender: #b5a0d5;
   --font-number: "Trebuchet MS", "Arial Rounded MT Bold", sans-serif;
+
+  /* Lab theme colors */
+  --lab-electric: #3B6DFF;
+  --lab-chemical: #38BDF8;
+  --lab-energy: #6EE7B7;
+  --lab-warning: #E9A568;
+  --lab-glass: rgba(255, 255, 255, 0.15);
+  --lab-metal: #7A8B99;
+  --lab-wood: #8B7355;
 }
+
+/* Music stage color progression */
+[data-music-stage="1"] { --stage-accent: var(--green); }
+[data-music-stage="2"] { --stage-accent: var(--mint); }
+[data-music-stage="3"] { --stage-accent: var(--lab-chemical); }
+[data-music-stage="4"] { --stage-accent: var(--lab-energy); }
+[data-music-stage="5"] { --stage-accent: var(--lab-electric); }
+[data-music-stage="6"] { --stage-accent: var(--lab-warning); }
 * { box-sizing: border-box; }
 body { margin: 0; min-width: 300px; }
 button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }

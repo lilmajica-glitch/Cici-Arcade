@@ -51,7 +51,7 @@ describe('Live music transitions', () => {
   it('adds requested layers at a bar boundary, without a riser or tempo jump', () => {
     vi.useFakeTimers()
     const clock = { currentTime: 0, state: 'running' }
-    const sounds = { kick: vi.fn(), hat: vi.fn(), bass: vi.fn(), snare: vi.fn(), keys: vi.fn(), pad: vi.fn(), percussion: vi.fn(), riser: vi.fn() }
+    const sounds = { kick: vi.fn(), hat: vi.fn(), bass: vi.fn(), snare: vi.fn(), keys: vi.fn(), pad: vi.fn(), percussion: vi.fn(), riser: vi.fn(), stopMusic: vi.fn() }
     const mix = { setMusicAudible: vi.fn() }
     const music = new MusicEngine(clock as unknown as BaseAudioContext, sounds as unknown as Synth, mix as unknown as Mixer)
     music.start()

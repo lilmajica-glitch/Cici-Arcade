@@ -21,6 +21,10 @@ export type GameState = {
   wrongInQuestion: boolean
   feedback: 'none' | 'correct' | 'wrong'
   eventId: number
+  lastDigit: string
+  digitEventId: number
+  digitResult: 'none' | 'accepted' | 'rejected'
+  hintVisible: boolean
 }
 
 export function initialGameState(sessionId = 0): GameState {
@@ -29,7 +33,8 @@ export function initialGameState(sessionId = 0): GameState {
     questionIndex: 0, totalQuestions: TOTAL_QUESTIONS, questions: [], currentQuestion: null,
     input: '', combo: 0, maxCombo: 0, bossHp: 100,
     correctCount: 0, wrongCount: 0, firstTryCount: 0, wrongInQuestion: false,
-    feedback: 'none', eventId: 0,
+    feedback: 'none', eventId: 0, lastDigit: '', digitEventId: 0,
+    digitResult: 'none', hintVisible: false,
   }
 }
 
@@ -56,7 +61,31 @@ export function enterDigit(state: GameState, digit: string): GameState {
 
 export function eraseDigit(state: GameState): GameState {
   if (!canAnswer(state) || !state.input) return state
-  return { ...state, input: state.input.slice(0, -1), feedback: 'none' }
+  return { ...state, input: state.input.slice(0, -1), feedback: 'none', lastDigit: '', digitResult: 'none' }
+}
+
+/** Feed the answer from left to right; a rejected digit never erases its correct prefix. */
+export function feedDigit(state: GameState, digit: string): GameState {
+  if (!canAnswer(state) || !state.currentQuestion || !/^\d$/.test(digit)) return state
+  const expected = String(state.currentQuestion.answer)
+  if (state.input.length >= expected.length) return state
+  const presentation = { lastDigit: digit, digitEventId: state.digitEventId + 1 }
+  if (digit !== expected[state.input.length]) {
+    return {
+      ...state, ...presentation, digitResult: 'rejected', feedback: 'wrong',
+      combo: resetCombo(), wrongCount: state.wrongCount + 1,
+      wrongInQuestion: true, eventId: state.eventId + 1,
+    }
+  }
+  const next: GameState = {
+    ...state, ...presentation, input: state.input + digit,
+    digitResult: 'accepted', feedback: 'none',
+  }
+  return next.input === expected ? submitAnswer(next) : next
+}
+
+export function toggleHint(state: GameState): GameState {
+  return canAnswer(state) ? { ...state, hintVisible: !state.hintVisible } : state
 }
 
 export function submitAnswer(state: GameState): GameState {
@@ -85,6 +114,7 @@ export function advanceAfterCorrect(state: GameState): GameState {
   return {
     ...state, phase: 'dispensing', currentQuestion: state.questions[state.questionIndex],
     input: '', wrongInQuestion: false, feedback: 'none',
+    lastDigit: '', digitResult: 'none', hintVisible: false,
   }
 }
 

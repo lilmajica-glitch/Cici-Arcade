@@ -1,27 +1,34 @@
 import { arrangeStep, playMusicEvents } from './arrangement'
 import { Mixer } from './Mixer'
 import { musicProgression } from './progression'
-import { FOCUS_SCORE } from './score'
+import { FOCUS_TRACK } from './tracks'
+import type { MusicTrack } from './tracks'
 import { Synth } from './Synth'
 
 export const PREVIEW_SECONDS = 54
 export const PREVIEW_INDICES = [0, 4, 8, 12, 15, 17] as const
-export const PREVIEW_SECTION_SECONDS = 4 * 4 * 60 / FOCUS_SCORE.bpm
+export const PREVIEW_SECTION_SECONDS = 4 * 4 * 60 / FOCUS_TRACK.bpm
 
-export async function renderPreview(sampleRate = 48000) {
-  const context = new OfflineAudioContext(2, PREVIEW_SECONDS * sampleRate, sampleRate)
+export function previewTiming(track: MusicTrack = FOCUS_TRACK) {
+  const sectionSeconds = 4 * 4 * 60 / track.bpm
+  return { sectionSeconds, seconds: Math.ceil(0.06 + sectionSeconds * 6 + 0.6) }
+}
+
+export async function renderPreview(sampleRate = 48000, track: MusicTrack = FOCUS_TRACK) {
+  const { seconds } = previewTiming(track)
+  const context = new OfflineAudioContext(2, seconds * sampleRate, sampleRate)
   const mixer = new Mixer(context)
   const synth = new Synth(context, mixer)
-  const duration = 60 / FOCUS_SCORE.bpm / 4
+  const duration = 60 / track.bpm / 4
   try {
     for (let step = 0; step < 24 * 16; step++) {
       const stage = musicProgression(PREVIEW_INDICES[Math.floor(step / 64)]).stage
-      playMusicEvents(synth, arrangeStep(step, 0.06 + step * duration, FOCUS_SCORE.bpm, stage))
+      playMusicEvents(synth, arrangeStep(step, 0.06 + step * duration, track.bpm, stage, track))
     }
     mixer.master.gain.setValueAtTime(0, 0)
     mixer.master.gain.linearRampToValueAtTime(0.65, 0.35)
-    mixer.master.gain.setValueAtTime(0.65, PREVIEW_SECONDS - 1.3)
-    mixer.master.gain.linearRampToValueAtTime(0, PREVIEW_SECONDS - 0.08)
+    mixer.master.gain.setValueAtTime(0.65, seconds - 1.3)
+    mixer.master.gain.linearRampToValueAtTime(0, seconds - 0.08)
     return await context.startRendering()
   } finally { synth.dispose(); mixer.dispose() }
 }

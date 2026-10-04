@@ -1,0 +1,59 @@
+/* Neon Gate Overlay */
+.neon-gate {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.gate-glow {
+  width: 100%;
+  height: 100%;
+  transition: all 0.3s ease-out;
+}
+
+/* Ground Reflection */
+.ground-reflection {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 40%;
+  background: linear-gradient(
+    to top,
+    rgba(168, 85, 247, 0.1) 0%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Vignette */
+.vignette {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 30%,
+    rgba(10, 0, 20, 0.4) 70%,
+    rgba(10, 0, 20, 0.8) 100%
+  );
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Canvas styles */
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}

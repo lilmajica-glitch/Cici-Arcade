@@ -12,11 +12,19 @@
     "preview": "vite preview --host 0.0.0.0",
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "intro:preview": "remotion studio src/intro/index.tsx",
+    "intro:render": "remotion render src/intro/index.tsx NeonRunnerIntro public/intro.mp4"
   },
   "dependencies": {
+    "@phosphor-icons/react": "^2.1.10",
+    "@react-three/drei": "^10.7.9",
+    "@react-three/fiber": "^9.8.1",
+    "@remotion/cli": "^4.0.532",
     "react": "19.3.0",
     "react-dom": "19.3.0",
+    "remotion": "^4.0.532",
+    "three": "^0.186.1",
     "zustand": "5.0.15"
   },
   "devDependencies": {

@@ -1,0 +1,119 @@
+┌─────────────────────────────────────────────────────────────┐
+│  🎬 霓虹跑酷 Intro 视频 - 快速参考                           │
+└─────────────────────────────────────────────────────────────┘
+
+📺 当前状态
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ Remotion Studio 正在运行
+   → http://localhost:3002
+
+✅ 所有组件已创建
+   → 3D鞋子、霓虹赛道、粒子系统、光门特效
+
+✅ 集成方案已就绪
+   → AppWithIntro.tsx + IntroScreen.tsx
+
+
+🚀 三步使用
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1️⃣  查看预览 (正在运行)
+    → 打开浏览器访问 http://localhost:3002
+    → 拖动时间轴，查看8秒完整动画
+
+2️⃣  渲染视频
+    → npm run intro:render
+    → 等待1-3分钟
+    → 生成 public/intro.mp4
+
+3️⃣  集成到游戏
+    修改 src/main.tsx:
+
+    import AppWithIntro from './AppWithIntro'
+
+    createRoot(document.getElementById('root')!).render(
+      <StrictMode>
+        <AppWithIntro />
+      </StrictMode>,
+    )
+
+
+⚡ 常用命令
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+预览编辑    npm run intro:preview
+渲染视频    npm run intro:render
+启动游戏    npm run dev
+测试页面    http://localhost:5173/intro-preview.html
+
+
+🎨 视觉效果
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+时长        8秒 (480帧 @ 60fps)
+分辨率      1920x1080
+主色        霓虹紫 #a855f7
+辅色        电子青 #06b6d4
+背景        深空黑 #0a0014
+
+动画        鞋子出现 → 热身旋转 → 蓄力停顿 →
+            爆发起跑 → 赛道显现 → 冲入光门
+
+
+🎯 时间轴
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+0.0s  ▓░░░░░░░  鞋子淡入
+1.5s  ▓▓▓░░░░░  脚踝旋转热身
+3.0s  ▓▓▓▓░░░░  蓄力停顿
+4.0s  ▓▓▓▓▓▓░░  爆发起跑
+5.5s  ▓▓▓▓▓▓▓░  显露赛道
+7.0s  ▓▓▓▓▓▓▓▓  冲入光门
+
+
+📁 关键文件
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+src/intro/
+  ├─ IntroVideo.tsx       主时间轴控制
+  ├─ Shoe.tsx             3D霓虹鞋
+  ├─ NeonTrack.tsx        三轨赛道
+  ├─ ParticleSystem.tsx   粒子特效
+  └─ Root.tsx             Remotion配置
+
+src/components/
+  ├─ IntroScreen.tsx      Intro播放器
+  └─ IntroScreen.css      样式
+
+src/
+  └─ AppWithIntro.tsx     游戏主入口
+
+
+🔧 快速调整
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+改颜色      搜索 #a855f7 替换成你的颜色
+改时长      Root.tsx → durationInFrames
+降低质量    npm run intro:render -- --quality=70
+小分辨率    npm run intro:render -- --width=1280 --height=720
+减粒子      ParticleSystem.tsx → count = 200
+
+
+📚 文档
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+INTRO_COMPLETE.md       总览和成果
+INTRO_GUIDE.md          详细使用指南
+INTRO_INTEGRATION.md    集成教程
+src/intro/README.md     技术文档
+
+
+💡 下一步
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. 打开 http://localhost:3002 查看预览
+2. 满意后运行 npm run intro:render
+3. 修改 src/main.tsx 集成到游戏
+4. npm run dev 测试完整流程
+
+🎉 享受你的霓虹跑酷intro！

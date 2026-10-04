@@ -1,10 +1,16 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { GameController, TIMINGS } from '../src/game/GameController'
+import { GameController, FESTIVAL_TIMINGS, TIMINGS } from '../src/game/GameController'
 import { gameStore } from '../src/game/gameStore'
 import { initialGameState } from '../src/game/GameEngine'
 import { preferencesStore } from '../src/game/preferencesStore'
 import { readStats } from '../src/utils/persistence'
 import { audioEngine } from '../src/audio/AudioEngine'
+import { MUSIC_TRACKS, pickMusicTrack } from '../src/audio/tracks'
+
+vi.mock('../src/audio/tracks', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../src/audio/tracks')>()
+  return { ...actual, pickMusicTrack: vi.fn(actual.pickMusicTrack) }
+})
 
 vi.mock('../src/audio/AudioEngine', () => ({ audioEngine: {
   initialize: vi.fn(async () => true), start: vi.fn(), stop: vi.fn(), progress: vi.fn(),
@@ -30,6 +36,79 @@ const answer = () => {
 }
 
 describe('presentation controller', () => {
+  it('selects once per game, retains the selection during answers, and draws again on replay', async () => {
+    vi.mocked(pickMusicTrack).mockReturnValueOnce(MUSIC_TRACKS[1]).mockReturnValueOnce(MUSIC_TRACKS[2])
+    controller.start()
+    await Promise.resolve()
+    expect(audioEngine.start).toHaveBeenLastCalledWith(MUSIC_TRACKS[1])
+    vi.advanceTimersByTime(TIMINGS.reveal)
+    answer()
+    vi.advanceTimersByTime(TIMINGS.correct + TIMINGS.reveal)
+    expect(pickMusicTrack).toHaveBeenCalledOnce()
+    controller.menu()
+    controller.start()
+    await Promise.resolve()
+    expect(audioEngine.start).toHaveBeenLastCalledWith(MUSIC_TRACKS[2])
+    expect(pickMusicTrack).toHaveBeenCalledTimes(2)
+  })
+
+  it('uses only the new game song when an earlier game initializes audio late', async () => {
+    let ready!: (value: boolean) => void
+    vi.mocked(audioEngine.initialize).mockImplementationOnce(() => new Promise((resolve) => { ready = resolve }))
+    vi.mocked(pickMusicTrack).mockReturnValueOnce(MUSIC_TRACKS[1]).mockReturnValueOnce(MUSIC_TRACKS[2])
+    controller.start()
+    controller.start()
+    await Promise.resolve()
+    ready(true)
+    await Promise.resolve()
+    expect(audioEngine.start).toHaveBeenCalledOnce()
+    expect(audioEngine.start).toHaveBeenLastCalledWith(MUSIC_TRACKS[2])
+  })
+
+  it('feeds digits with immediate audio and gives the machine backlash time before the next question', () => {
+    controller.start()
+    vi.advanceTimersByTime(TIMINGS.reveal)
+    const digits = String(gameStore.getState().currentQuestion!.answer)
+    for (const digit of digits) controller.feed(digit)
+    controller.feed(digits.at(-1)!)
+    expect(audioEngine.number).toHaveBeenCalledTimes(digits.length)
+    expect(audioEngine.correct).toHaveBeenCalledOnce()
+    expect(audioEngine.progress).toHaveBeenLastCalledWith(1, 20)
+    vi.advanceTimersByTime(FESTIVAL_TIMINGS.correct - 1)
+    expect(gameStore.getState().phase).toBe('correct')
+    vi.advanceTimersByTime(1 + TIMINGS.reveal)
+    expect(gameStore.getState().phase).toBe('answering')
+    expect(gameStore.getState().questionIndex).toBe(1)
+  })
+
+  it('shortens backlash in reduced motion and cancels it when restarting', () => {
+    preferencesStore.setState({ reducedMotion: true })
+    controller.start()
+    vi.advanceTimersByTime(TIMINGS.reducedReveal)
+    for (const digit of String(gameStore.getState().currentQuestion!.answer)) controller.feed(digit)
+    vi.advanceTimersByTime(FESTIVAL_TIMINGS.reducedCorrect + TIMINGS.reducedReveal)
+    expect(gameStore.getState().questionIndex).toBe(1)
+    for (const digit of String(gameStore.getState().currentQuestion!.answer)) controller.feed(digit)
+    controller.start()
+    vi.advanceTimersByTime(2000)
+    expect(gameStore.getState().questionIndex).toBe(0)
+    expect(gameStore.getState().phase).toBe('answering')
+  })
+
+  it('records exactly one victory after twenty automatic feed answers', () => {
+    controller.start()
+    vi.advanceTimersByTime(TIMINGS.reveal)
+    for (let i = 0; i < 20; i++) {
+      for (const digit of String(gameStore.getState().currentQuestion!.answer)) controller.feed(digit)
+      vi.advanceTimersByTime(FESTIVAL_TIMINGS.correct + TIMINGS.reveal)
+    }
+    expect(gameStore.getState().status).toBe('victory')
+    controller.feed('1')
+    vi.advanceTimersByTime(5000)
+    expect(readStats()).toEqual({ bestAccuracy: 100, bestCombo: 20, gamesPlayed: 1 })
+    expect(audioEngine.victory).toHaveBeenCalledOnce()
+  })
+
   it('accepts input before the 620ms tongue finishes and locks double confirmations', () => {
     controller.start()
     vi.advanceTimersByTime(TIMINGS.reveal)

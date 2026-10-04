@@ -2,8 +2,10 @@ import { gameActions, gameStore } from './gameStore'
 import { preferencesStore } from './preferencesStore'
 import { readStats, recordVictory, writeStats } from '../utils/persistence'
 import { audioEngine } from '../audio/AudioEngine'
+import { pickMusicTrack } from '../audio/tracks'
 
 export const TIMINGS = { reveal: 240, correct: 420, reducedReveal: 70, reducedCorrect: 220 }
+export const FESTIVAL_TIMINGS = { correct: 1300, reducedCorrect: 360 }
 export type InputAction = string | 'erase' | 'submit'
 export type FeedbackEvent = { type: 'correct' | 'wrong' | 'victory'; combo: number }
 
@@ -18,12 +20,13 @@ export class GameController {
     const audioReady = audioEngine.initialize()
     gameActions.start()
     const sessionId = gameStore.getState().sessionId
+    const track = pickMusicTrack()
     void audioReady.then((ready) => {
       const current = gameStore.getState()
       if (current.sessionId !== sessionId) return
       preferencesStore.setState({ audioStatus: ready ? 'ready' : 'unavailable' })
       if (ready && current.status === 'playing') {
-        audioEngine.start()
+        audioEngine.start(track)
         audioEngine.progress(current.questionIndex, current.totalQuestions)
       }
     })
@@ -53,6 +56,34 @@ export class GameController {
         audioEngine.victory()
       } else this.scheduleReveal()
     }, reduced ? TIMINGS.reducedCorrect : TIMINGS.correct)
+  }
+
+  feed(digit: string) {
+    const before = gameStore.getState()
+    const after = gameActions.feed(digit)
+    if (before === after) return
+    audioEngine.number(digit)
+    if (after.feedback === 'wrong') {
+      audioEngine.wrong()
+      this.emit({ type: 'wrong', combo: after.combo })
+      return
+    }
+    if (after.phase !== 'correct') return
+    audioEngine.correct(after.combo)
+    audioEngine.progress(after.questionIndex, after.totalQuestions)
+    this.emit({ type: 'correct', combo: after.combo })
+    this.schedule(() => {
+      const next = gameActions.advance()
+      if (next.status === 'victory') {
+        if (this.savedSession !== next.sessionId) {
+          writeStats(recordVictory(next, readStats()))
+          this.savedSession = next.sessionId
+        }
+        this.emit({ type: 'victory', combo: next.combo })
+        audioEngine.victory()
+      } else this.scheduleReveal()
+    }, preferencesStore.getState().reducedMotion
+      ? FESTIVAL_TIMINGS.reducedCorrect : FESTIVAL_TIMINGS.correct)
   }
 
   menu() {

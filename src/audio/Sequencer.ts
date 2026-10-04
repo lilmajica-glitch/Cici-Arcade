@@ -18,9 +18,9 @@ export class Sequencer {
 
   setTargetBpm(bpm: number) { if (Number.isFinite(bpm)) this.targetBpm = Math.max(96, Math.min(116, bpm)) }
 
-  start(reset = true) {
+  start(reset = true, bpm: number = FOCUS_SCORE.bpm) {
     this.stop()
-    if (reset) { this.step = 0; this.bpm = FOCUS_SCORE.bpm; this.targetBpm = FOCUS_SCORE.bpm }
+    if (reset) { this.step = 0; this.setTargetBpm(bpm); this.bpm = this.targetBpm }
     this.nextTime = this.clock.currentTime + 0.04
     this.lastTick = this.clock.currentTime
     this.tick()

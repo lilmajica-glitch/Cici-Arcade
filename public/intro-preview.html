@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>霓虹跑酷 Intro 预览</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0a0014;
+      color: #fff;
+      font-family: system-ui, -apple-system, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    h1 {
+      text-align: center;
+      color: #a855f7;
+      margin-bottom: 10px;
+      font-size: 2rem;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #94a3b8;
+      margin-bottom: 30px;
+      font-size: 0.9rem;
+    }
+
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 60px rgba(168, 85, 247, 0.3);
+    }
+
+    video {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #a855f7, #8b5cf6);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(168, 85, 247, 0.5);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button.secondary {
+      background: linear-gradient(135deg, #06b6d4, #0891b2);
+      box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+    }
+
+    button.secondary:hover {
+      box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5);
+    }
+
+    .info {
+      margin-top: 30px;
+      padding: 20px;
+      background: rgba(168, 85, 247, 0.1);
+      border-radius: 8px;
+      border: 1px solid rgba(168, 85, 247, 0.3);
+    }
+
+    .info h2 {
+      color: #a855f7;
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+
+    .info p {
+      color: #cbd5e1;
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+
+    .info ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .info li {
+      color: #cbd5e1;
+      padding: 5px 0;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .info li::before {
+      content: "▸";
+      position: absolute;
+      left: 0;
+      color: #a855f7;
+    }
+
+    .status {
+      text-align: center;
+      margin-top: 15px;
+      padding: 10px;
+      background: rgba(234, 179, 8, 0.1);
+      border-radius: 6px;
+      border: 1px solid rgba(234, 179, 8, 0.3);
+      color: #fbbf24;
+      font-size: 0.9rem;
+    }
+
+    .error {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: rgba(239, 68, 68, 0.3);
+      color: #f87171;
+    }
+
+    .success {
+      background: rgba(34, 197, 94, 0.1);
+      border-color: rgba(34, 197, 94, 0.3);
+      color: #4ade80;
+    }
+
+    code {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      color: #06b6d4;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎬 霓虹跑酷 Intro 视频</h1>
+    <p class="subtitle">8秒确定性开场动画 · 霓虹紫色 · 赛博跑酷风格</p>
+
+    <div class="video-wrapper">
+      <video id="introVideo" controls muted>
+        <source src="/intro.mp4" type="video/mp4">
+        您的浏览器不支持视频播放。
+      </video>
+    </div>
+
+    <div class="controls">
+      <button onclick="playVideo()">▶ 播放</button>
+      <button onclick="restartVideo()">🔄 重新播放</button>
+      <button onclick="toggleMute()" class="secondary">🔊 静音/取消静音</button>
+      <button onclick="toggleFullscreen()" class="secondary">⛶ 全屏</button>
+    </div>
+
+    <div id="statusMessage"></div>
+
+    <div class="info">
+      <h2>📋 视频信息</h2>
+      <ul>
+        <li><strong>时长:</strong> 8秒 (480帧 @ 60fps)</li>
+        <li><strong>分辨率:</strong> 1920x1080</li>
+        <li><strong>主色调:</strong> 霓虹紫色 (#a855f7)</li>
+        <li><strong>技术栈:</strong> Remotion + Three.js + React</li>
+      </ul>
+
+      <h2 style="margin-top: 20px;">🎬 分镜说明</h2>
+      <p>
+        <strong>0-1.5s:</strong> 鞋子出现<br>
+        <strong>1.5-3s:</strong> 脚踝旋转热身<br>
+        <strong>3-4s:</strong> 蓄力停顿，地面发光<br>
+        <strong>4-5.5s:</strong> 爆发起跑，粒子拖尾<br>
+        <strong>5.5-7s:</strong> 显露三条霓虹赛道<br>
+        <strong>7-8s:</strong> 冲入光门过渡
+      </p>
+
+      <h2 style="margin-top: 20px;">🚀 如何渲染</h2>
+      <p>
+        如果视频文件不存在，请运行：<br>
+        <code>npm run intro:render</code>
+      </p>
+      <p>
+        或者在Remotion Studio中实时预览：<br>
+        <code>npm run intro:preview</code>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const video = document.getElementById('introVideo')
+    const statusDiv = document.getElementById('statusMessage')
+
+    // 检查视频是否加载成功
+    video.addEventListener('loadeddata', () => {
+      showStatus('✓ 视频加载成功！', 'success')
+    })
+
+    video.addEventListener('error', () => {
+      showStatus('⚠ 视频文件未找到。请先运行 npm run intro:render 渲染视频。', 'error')
+    })
+
+    video.addEventListener('ended', () => {
+      showStatus('视频播放完毕。准备好过渡到游戏了！', 'success')
+    })
+
+    function playVideo() {
+      video.play()
+      showStatus('▶ 播放中...', 'status')
+    }
+
+    function restartVideo() {
+      video.currentTime = 0
+      video.play()
+      showStatus('🔄 重新播放', 'status')
+    }
+
+    function toggleMute() {
+      video.muted = !video.muted
+      showStatus(video.muted ? '🔇 已静音' : '🔊 已取消静音', 'status')
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        video.parentElement.requestFullscreen()
+        showStatus('⛶ 全屏模式', 'status')
+      } else {
+        document.exitFullscreen()
+        showStatus('退出全屏', 'status')
+      }
+    }
+
+    function showStatus(message, type = 'status') {
+      statusDiv.innerHTML = `<div class="status ${type}">${message}</div>`
+      if (type !== 'error') {
+        setTimeout(() => {
+          statusDiv.innerHTML = ''
+        }, 3000)
+      }
+    }
+  </script>
+</body>
+</html>

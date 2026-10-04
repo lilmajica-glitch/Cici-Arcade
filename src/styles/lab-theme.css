@@ -1,0 +1,210 @@
+/* Lab Environment Styling */
+
+.lab-environment {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Wall decorations - background layer */
+.lab-wall-decor {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  display: flex;
+  justify-content: space-between;
+  z-index: -1;
+  opacity: 0.4;
+}
+
+.periodic-table {
+  width: 180px;
+  height: 120px;
+}
+
+.safety-poster {
+  width: 100px;
+  height: 120px;
+}
+
+/* Equipment positioning */
+.lab-equipment-left {
+  position: absolute;
+  left: 5%;
+  top: 35%;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+.lab-equipment-right {
+  position: absolute;
+  right: 5%;
+  top: 30%;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+}
+
+.lab-bench-equipment {
+  position: absolute;
+  left: 15%;
+  bottom: 25%;
+  z-index: 1;
+}
+
+.lab-microscope {
+  width: 60px;
+  height: 80px;
+  opacity: 0.7;
+}
+
+.bunsen-burner {
+  width: 40px;
+  height: 70px;
+}
+
+.test-tube-rack {
+  width: 100px;
+  height: 90px;
+}
+
+.lab-beaker {
+  width: 50px;
+  height: 70px;
+  opacity: 0.8;
+}
+
+/* Flame animation */
+@keyframes flame-flicker {
+  0%, 100% { transform: scaleY(1) scaleX(1); opacity: 0.8; }
+  25% { transform: scaleY(1.1) scaleX(0.95); opacity: 0.9; }
+  50% { transform: scaleY(0.95) scaleX(1.05); opacity: 0.85; }
+  75% { transform: scaleY(1.05) scaleX(0.98); opacity: 0.95; }
+}
+
+.bunsen-burner[data-lit="true"] .flame {
+  animation: flame-flicker 0.3s infinite;
+  transform-origin: center bottom;
+}
+
+/* Bubble rise animation */
+@keyframes bubble-rise {
+  0% {
+    transform: translateY(0);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+}
+
+.bubble-rise {
+  animation: bubble-rise 2s infinite;
+}
+
+/* Stage-based intensity changes */
+[data-lab-stage="1"] .lab-equipment-left,
+[data-lab-stage="1"] .lab-equipment-right {
+  opacity: 0.6;
+}
+
+[data-lab-stage="2"] .lab-equipment-left,
+[data-lab-stage="2"] .lab-equipment-right {
+  opacity: 0.75;
+}
+
+[data-lab-stage="3"] .lab-equipment-left,
+[data-lab-stage="3"] .lab-equipment-right {
+  opacity: 0.85;
+}
+
+[data-lab-stage="4"] .lab-equipment-left,
+[data-lab-stage="4"] .lab-equipment-right,
+[data-lab-stage="5"] .lab-equipment-left,
+[data-lab-stage="5"] .lab-equipment-right,
+[data-lab-stage="6"] .lab-equipment-left,
+[data-lab-stage="6"] .lab-equipment-right {
+  opacity: 1;
+}
+
+/* Chaos level effects */
+[data-chaos="active"] .lab-beaker {
+  animation: gentle-sway 2s ease-in-out infinite;
+}
+
+[data-chaos="festival"] .lab-beaker {
+  animation: bubble-wild 0.8s ease-in-out infinite;
+}
+
+[data-chaos="festival"] .test-tube-rack {
+  animation: gentle-sway 1.5s ease-in-out infinite;
+}
+
+@keyframes gentle-sway {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(2deg); }
+}
+
+@keyframes bubble-wild {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.02) rotate(-1deg); }
+  75% { transform: scale(0.98) rotate(1deg); }
+}
+
+/* Festival mode glow effects */
+[data-lab-stage="6"] .lab-beaker,
+[data-lab-stage="6"] .test-tube-rack {
+  filter: brightness(1.2) saturate(1.3);
+}
+
+[data-lab-stage="6"] .bunsen-burner .flame {
+  filter: brightness(1.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .lab-wall-decor {
+    display: none;
+  }
+
+  .lab-equipment-left {
+    left: 2%;
+    scale: 0.7;
+  }
+
+  .lab-equipment-right {
+    right: 2%;
+    scale: 0.7;
+  }
+
+  .lab-bench-equipment {
+    left: 10%;
+    scale: 0.8;
+  }
+}
+
+@media (max-width: 480px) {
+  .lab-equipment-left,
+  .lab-equipment-right,
+  .lab-bench-equipment {
+    display: none;
+  }
+}
+
+/* Reduced motion support */
+.reduced-motion .bunsen-burner[data-lit="true"] .flame,
+.reduced-motion .bubble-rise,
+.reduced-motion [data-chaos="active"] .lab-beaker,
+.reduced-motion [data-chaos="festival"] .lab-beaker,
+.reduced-motion [data-chaos="festival"] .test-tube-rack {
+  animation: none;
+}

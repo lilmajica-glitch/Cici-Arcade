@@ -1,0 +1,102 @@
+[
+  {
+    "question": "1+8",
+    "answer": "9",
+    "hp": 95
+  },
+  {
+    "question": "7-5",
+    "answer": "2",
+    "hp": 90
+  },
+  {
+    "question": "4+6",
+    "answer": "10",
+    "hp": 85
+  },
+  {
+    "question": "9-8",
+    "answer": "1",
+    "hp": 80
+  },
+  {
+    "question": "7+9",
+    "answer": "16",
+    "hp": 75
+  },
+  {
+    "question": "13+1",
+    "answer": "14",
+    "hp": 70
+  },
+  {
+    "question": "20-20",
+    "answer": "0",
+    "hp": 65
+  },
+  {
+    "question": "16-8",
+    "answer": "8",
+    "hp": 60
+  },
+  {
+    "question": "4+16",
+    "answer": "20",
+    "hp": 55
+  },
+  {
+    "question": "4+4",
+    "answer": "8",
+    "hp": 50
+  },
+  {
+    "question": "14-5",
+    "answer": "9",
+    "hp": 45
+  },
+  {
+    "question": "7+8",
+    "answer": "15",
+    "hp": 40
+  },
+  {
+    "question": "8-2",
+    "answer": "6",
+    "hp": 35
+  },
+  {
+    "question": "17-10",
+    "answer": "7",
+    "hp": 30
+  },
+  {
+    "question": "2-0",
+    "answer": "2",
+    "hp": 25
+  },
+  {
+    "question": "13-11",
+    "answer": "2",
+    "hp": 20
+  },
+  {
+    "question": "2-2",
+    "answer": "0",
+    "hp": 15
+  },
+  {
+    "question": "4+8",
+    "answer": "12",
+    "hp": 10
+  },
+  {
+    "question": "4+13",
+    "answer": "17",
+    "hp": 5
+  },
+  {
+    "question": "7+3",
+    "answer": "10",
+    "hp": 0
+  }
+]

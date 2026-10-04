@@ -29,6 +29,7 @@ button.addEventListener('click', async () => {
       ['bass', (s) => s.bass(0.05, 48)], ['number', (_, f) => f.number('1')],
       ['correct', (_, f) => f.correct(10)], ['wrong', (_, f) => f.wrong()],
       ['pluck', (s) => s.pluck(0.05, 72)], ['pad', (s) => s.pad(0.05, [60, 64, 67], 0.9)],
+      ['mallet', (s) => s.mallet(0.05, 67)],
       ['sparkle', (s) => s.sparkle(0.05)], ['impact', (s) => s.impact(0.05)],
       ['riser', (s) => s.riser(0.05)], ['swoosh', (s) => s.swoosh(0.05)], ['victory', (_, f) => f.victory()],
       ['fullMix', (s, f) => {
@@ -48,10 +49,30 @@ button.addEventListener('click', async () => {
       synth.dispose()
       mixer.dispose()
     }
-    const pass = Object.entries(checks).every(([name, check]) => name === 'muted'
+    const context = new OfflineAudioContext(2, 48_000 * 2, 48_000)
+    const mixer = new Mixer(context)
+    const synth = new Synth(context, mixer)
+    let lifecycle
+    try {
+      synth.keys(0.05, 60, 0.07, 1.4)
+      synth.mallet(1.3, 69, 0.07, 0.3)
+      synth.pluck(0.8, 72, 'sfx', 0.2, 0.2)
+      synth.stopMusic(0.3)
+      const buffer = await context.startRendering()
+      const peak = (from: number, to: number) => {
+        let value = 0
+        for (let channel = 0; channel < buffer.numberOfChannels; channel++) {
+          const data = buffer.getChannelData(channel)
+          for (let sample = Math.floor(from * buffer.sampleRate); sample < Math.floor(to * buffer.sampleRate); sample++) value = Math.max(value, Math.abs(data[sample]))
+        }
+        return value
+      }
+      lifecycle = { oldMusicStopped: peak(0.6, 0.75) < 0.00001, futureNotesCancelled: peak(1.35, 1.55) < 0.00001, sfxPreserved: peak(0.8, 0.95) > 0.005 }
+    } finally { synth.dispose(); mixer.dispose() }
+    const pass = Object.values(lifecycle).every(Boolean) && Object.entries(checks).every(([name, check]) => name === 'muted'
       ? check.peak < 0.00001
       : check.rms > 0.00001 && check.peak < 0.95 && check.tail < 0.0001)
-    output.textContent = JSON.stringify({ pass, sampleRate: 48000, checks }, null, 2)
+    output.textContent = JSON.stringify({ pass, sampleRate: 48000, checks, lifecycle }, null, 2)
   } catch (error) {
     output.textContent = `FAIL: ${String(error)}`
   } finally { button.disabled = false }

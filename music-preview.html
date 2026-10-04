@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#edf1e8" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <title>向前一点 · Cici 音乐试听</title>
+    <title>Cici 原创配乐 · 音乐试听</title>
   </head>
   <body>
     <main class="listening-room">
@@ -14,9 +14,10 @@
         <div class="record-art" aria-hidden="true"><div class="record"><div class="record-label">cici<span>108</span></div></div><span class="cover-title">ONE STEP<br />AT A TIME.</span><span class="cover-index">01 / THE FOCUS GROOVE</span></div>
         <div class="record-info">
           <span class="eyebrow">CICI ORIGINAL / 数学练习配乐</span>
+          <label class="track-picker">选择配乐 <select id="track"><option value="focus">向前一点 · 108 BPM</option><option value="orbit">星轨弹跳 · 112 BPM</option><option value="cloud">云朵接力 · 100 BPM</option></select></label>
           <h1 id="title">向前一点</h1>
           <p class="intro">有律动，也留一点空白。<br />鼓点、贝斯和电钢琴，陪你慢慢想。</p>
-          <div class="tags"><span>无歌词</span><span>108 BPM</span><span>54 秒试听</span></div>
+          <div class="tags"><span>无歌词</span><span id="tempo">108 BPM</span><span id="duration">54 秒试听</span></div>
           <div class="transport"><button id="play" type="button">▶ 播放试听</button><button id="stop" type="button" disabled>停止</button></div>
           <div class="playback"><progress id="progress" max="54" value="0" aria-label="试听进度"></progress><output id="clock">0:00 / 0:54</output></div>
           <label class="volume">试听音量 <input id="volume" type="range" min="0" max="100" value="75" /><output id="volume-value">75%</output></label>
@@ -25,7 +26,7 @@
           <ol class="sections" aria-label="六段编曲"><li>找到节奏</li><li>步伐轻快</li><li>和声铺开</li><li>律动加深</li><li>旋律点亮</li><li>从容收尾</li></ol>
         </div>
       </section>
-      <p class="listening-note">从舒服的音量开始。喜欢安静时，也可以关掉背景音乐。游戏里的配器随答题进度展开，按自己的节奏作答就好。</p>
+      <p class="listening-note">每局开始时，游戏会从三首原创配乐中随机选一首，整局保持同一首。这里可以逐首试听。<br />从舒服的音量开始；喜欢安静时，也可以关掉背景音乐。配器随答题进度展开，按自己的节奏作答就好。</p>
     </main>
     <script type="module" src="/src/preview/main.ts"></script>
   </body>

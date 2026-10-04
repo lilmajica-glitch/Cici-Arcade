@@ -65,6 +65,54 @@
 @keyframes pad-release { 0% { transform: scale(.94); } 45% { transform: scale(1.06); } 100% { transform: scale(1); } }
 @keyframes confirm-glow { 0%,100% { box-shadow: 0 5px 0 #2e513c; } 35% { box-shadow: 0 5px 0 #2e513c, 0 0 0 5px #c8dfab; } }
 @keyframes victory-settle { from { opacity: .5; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+/* New emotion animations */
+@keyframes head-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes arm-wave {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-15deg); }
+  75% { transform: rotate(15deg); }
+}
+
+@keyframes arm-thumbs-up {
+  0%, 100% { transform: rotate(0deg) translateY(0); }
+  50% { transform: rotate(-20deg) translateY(-8px); }
+}
+
+.doctor-excited .head-bounce {
+  animation: head-bounce 0.6s ease-in-out infinite;
+}
+
+.doctor-excited .arm-wave {
+  animation: arm-wave 0.8s ease-in-out infinite;
+}
+
+.doctor-encouraging .arm-thumbs-up {
+  animation: arm-thumbs-up 1s ease-in-out;
+}
+
+.boss-stage.boss-encouraging .boss-speech {
+  background: #e3f2fd;
+  border-color: #90caf9;
+  color: #1976d2;
+}
+
+.boss-stage.boss-excited .boss-speech {
+  background: #fff9c4;
+  border-color: #fdd835;
+  color: #f57f17;
+  animation: speech-pulse 0.8s ease-in-out infinite;
+}
+
+@keyframes speech-pulse {
+  0%, 100% { transform: translateX(-50%) scale(1); }
+  50% { transform: translateX(-50%) scale(1.05); }
+}
+
 .reduced-motion *, .reduced-motion *::before, .reduced-motion *::after { animation: none !important; transition: none !important; }
 .reduced-motion .orbit-bubble, .reduced-motion .music-meter > i { transform: none; }
 .reduced-motion .particle-canvas { display: none; }

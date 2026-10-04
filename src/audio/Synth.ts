@@ -28,6 +28,7 @@ export function seededNoise(seed: number) {
 export class Synth {
   private noiseBuffer: AudioBuffer
   private sources = new Set<AudioScheduledSourceNode>()
+  private musicSources = new Set<AudioScheduledSourceNode>()
 
   constructor(readonly context: BaseAudioContext, private mixer: Mixer) {
     this.noiseBuffer = context.createBuffer(1, Math.floor(context.sampleRate * 0.5), context.sampleRate)
@@ -56,7 +57,7 @@ export class Synth {
     filter.connect(gain)
     gain.connect(panner)
     panner.connect(this.mixer.bus(options.bus))
-    this.track(source, [filter, gain, panner])
+    this.track(source, [filter, gain, panner], options.bus)
     source.start(t)
     source.stop(t + options.duration + 0.035)
   }
@@ -87,26 +88,28 @@ export class Synth {
     panner.pan.value = pan
     gain.connect(panner)
     panner.connect(this.mixer.bus(bus))
-    this.track(source, [filter, gain, panner])
+    this.track(source, [filter, gain, panner], bus)
     // Rotate through a seeded buffer without changing the rendered score between runs.
     source.start(t, (t * 0.137) % 0.4)
     source.stop(t + duration + 0.035)
     return source
   }
 
-  private track(source: AudioScheduledSourceNode, nodes: AudioNode[]) {
+  private track(source: AudioScheduledSourceNode, nodes: AudioNode[], bus: AudioBus) {
     // Offline scheduling queues future events before time advances. The live cap
     // must not truncate that queue; the offline render has a bounded duration.
     const offline = typeof OfflineAudioContext !== 'undefined' && this.context instanceof OfflineAudioContext
     if (!offline && this.sources.size >= MAX_VOICES) {
       const oldest = this.sources.values().next().value
-      if (oldest) { try { oldest.stop() } catch { /* already ended */ } this.sources.delete(oldest) }
+      if (oldest) { try { oldest.stop() } catch { /* already ended */ } this.sources.delete(oldest); this.musicSources.delete(oldest) }
     }
     this.sources.add(source)
+    if (bus === 'music') this.musicSources.add(source)
     source.onended = () => {
       source.disconnect()
       nodes.forEach((node) => node.disconnect())
       this.sources.delete(source)
+      this.musicSources.delete(source)
       source.onended = null
     }
   }
@@ -150,8 +153,8 @@ export class Synth {
     carrier.connect(filter); filter.connect(gain); gain.connect(panner)
     panner.connect(this.mixer.bus('music'))
     panner.connect(this.mixer.room)
-    this.track(carrier, [filter, gain, panner])
-    this.track(modulator, [modulation])
+    this.track(carrier, [filter, gain, panner], 'music')
+    this.track(modulator, [modulation], 'music')
     carrier.start(t); modulator.start(t)
     carrier.stop(t + duration + 0.035); modulator.stop(t + duration + 0.035)
   }
@@ -164,6 +167,13 @@ export class Synth {
   pluck(time: number, midi: number, bus: AudioBus = 'music', volume = 0.12, duration = 0.3, pan = 0) {
     this.tone(time, { frequency: midiHz(midi), type: 'triangle', duration, volume, bus, cutoff: 3600, pan })
     this.tone(time, { frequency: midiHz(midi + 12), duration: duration * 0.55, volume: volume * 0.22, bus, pan })
+  }
+
+  /** Rounded wooden mallet: quiet third partial, no octave-up bell shimmer. */
+  mallet(time: number, midi: number, volume = 0.07, duration = 0.6, pan = 0) {
+    const frequency = midiHz(midi)
+    this.tone(time, { frequency, duration, volume, attack: 0.01, body: 0.18, bus: 'music', cutoff: 2200, pan })
+    this.tone(time, { frequency: frequency * 3, duration: duration * 0.36, volume: volume * 0.16, attack: 0.008, bus: 'music', cutoff: 2200, pan })
   }
 
   pad(time: number, notes: readonly number[], duration: number, bus: AudioBus = 'music') {
@@ -194,8 +204,13 @@ export class Synth {
     this.noise(time, 0.19, 0.043, 470, 'bandpass', 'sfx', 2200, 0.07)
   }
 
+  stopMusic(time = this.context.currentTime) {
+    for (const source of this.musicSources) { try { source.stop(time) } catch { /* already stopped */ } }
+  }
+
   dispose() {
     for (const source of this.sources) { try { source.stop() } catch { /* already stopped */ } }
     this.sources.clear()
+    this.musicSources.clear()
   }
 }

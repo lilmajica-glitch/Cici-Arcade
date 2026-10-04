@@ -2,6 +2,8 @@ import { Mixer } from './Mixer'
 import { Synth } from './Synth'
 import { MusicEngine } from './MusicEngine'
 import { SFX } from './SFX'
+import { FOCUS_TRACK } from './tracks'
+import type { MusicTrack } from './tracks'
 
 export class AudioEngine {
   private context: AudioContext | null = null
@@ -34,7 +36,7 @@ export class AudioEngine {
 
   setMuted(muted: boolean) { this.muted = muted; this.mixer?.setMuted(muted) }
   setMusicVolume(level: number) { if (Number.isFinite(level)) { this.musicVolume = Math.max(0, Math.min(1, level)); this.mixer?.setMusicVolume(this.musicVolume) } }
-  start() { this.shouldPlay = true; this.music?.start(); this.effects?.start() }
+  start(track: MusicTrack = FOCUS_TRACK) { this.shouldPlay = true; this.music?.start(true, track); this.effects?.start() }
   stop() { this.shouldPlay = false; this.music?.stop() }
   progress(index: number, total: number) { this.music?.setProgress(index, total) }
   number(digit: string) { this.effects?.number(digit) }
