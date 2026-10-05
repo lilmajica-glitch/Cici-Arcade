@@ -1,65 +1,48 @@
-# 机器反噬版：设计验收
+# CiciArcade 钴蓝游戏场：网站验收
 
 final result: passed
 
-设计起始：2026-10-03；最终验收：2026-10-04。可玩实现：`http://localhost:4173/`。当前没有未解决的 P0、P1 或 P2 问题。以下结论来自四轮共同图像对照和真实浏览器操作。
+验收日期：2026-10-04（用户时区）。用户选择已展示的第 3 张渲染图，并授权制作动效、悬停放大与打卡组件。当前首页、大厅与实际游戏入口没有未解决的 P0、P1 或 P2 问题。原有数学游戏验收完整保存于 [design-qa.game-backlash.md](./design-qa.game-backlash.md)。
 
 ## 比较目标与归一化
 
-- source visual truth path：`D:/workqu/dr.cici/docs/design-options-2026-10-03/concept-03-v3-machine-backlash.png`
-- implementation screenshot path：`D:/workqu/dr.cici/docs/design-options-2026-10-03/implementation-backlash-final.jpg`
-- viewport：1487 × 1058 CSS px。
-- 源图与实现截图均为 1487 × 1058 像素，无设备边框或浏览器工具栏。没有额外设置 deviceScaleFactor；在设计对照视口下测得 devicePixelRatio ≈ 1，默认 1280 × 720 视口下为约 1.635，截图接口始终输出对应 CSS 视口的像素尺寸。按 1 图像像素 / CSS px 归一化后比较，不将默认视口 DPR 误当成截图倍数。
-- state：均为第 13 题完成后的机器反噬、博士 35 / 100 HP、四种乐器点亮。源图题目 `8 + 7 = 15`、连击 ×9；实机随机题目 `8 − 2 = 6`、连击 ×13。随机内容与答案位数不同，按共同阶段与布局比较，不宣称逐像素相同。两位答案的宽度和间距另有第 3 轮 `16 + 3 = 19` 的证据。
-- full-view comparison evidence：[最终共同对照图](./docs/design-options-2026-10-03/qa-comparison-pass4.jpg)。浏览器在 1540 × 1240 视口渲染对照页面，左右图按相同比例显示。
-- focused region comparison evidence：同一对照图下方包含题面与奖励文字、品牌和进度、声音与动态控制的原始密度区域。两边都取自实际源图和实际运行截图。没有用分别查看两张图代替共同对照。
+- source visual truth path：`D:/workqu/dr.cici/docs/website-concepts-2026-10-04/cobalt-playground.png`。
+- implementation screenshot path：`D:/workqu/dr.cici/docs/website-concepts-2026-10-04/qa/desktop-final.jpg`。
+- 比较状态：首页顶部，入场动画结束、未悬停、两个真实游戏初始卡片、学习标签为本局成绩。吉祥物持续缓慢浮动，截图时位置会有小幅差异。
+- 浏览器视口：1086 × 1448 CSS px；页面内容宽度测得 1071 px，无横向溢出。浏览器滚动条约占 15 px，截图接口输出 1070 × 1448（宽度有 1 px 采样舍入）。源图实际为 1086 × 1448，无浏览器滚动条槽。
+- 概览共同显示高度 650 px，两张图高度均为 1448 px，因此采用相同缩放比例 650 / 1448。原始密度细节图不再缩放，使用相同裁切起点。源图与实现的 16 px 宽度差异明确保留，不宣称逐像素相同。
+- full-view + focused-region comparison evidence：[最终共同对照](./docs/website-concepts-2026-10-04/qa/comparison-final.jpg)，由 [comparison-final.html](./docs/website-concepts-2026-10-04/qa/comparison-final.html) 在 1280 × 1300 视口渲染。概览和主标题区域在同一图像输入中共同检查。
+- 用户授权的范围差异：增加完整学习交互、每日打卡、游戏活动记录、移动菜单与动效；为实际信息和组件调整下半页高度。概念图的占位小字改为真实游戏文案与数据。
 
-## 当前发现
+## 视觉迭代
 
-没有开放的 P0 / P1 / P2。主要输入、题面、博士生命值、反噬方向、音乐进度和持久控制均清楚可用。
-
-以下差异为已接受的实现约束：随机题目和真实连击数；准确的 20 个进度圆点代替生成图中点阵与横条混合的示意；图标采用同一套 Phosphor 标准图标；重新生成的分层原画保持相同角色与配色，线条细节不完全相同。
-
-## 四轮比较与修复
-
-| 轮次 | 发现及影响 | 实际修复 | 修复后的证据与结果 |
+| 轮次 | 发现 | 优先级 | 修复与证据 |
 | --- | --- | --- | --- |
-| 1 | P2：嘴内答案被乐器条挡住；反噬喷射与台词相碰；舌根连续性不足；右侧工具与键盘比例偏窄。 | 提高嘴内泡泡层级、上移显示位置；缩小并调整喷射；保留机器舌根与舌面的连续重叠；扩大工具区域并调整键盘边距。 | [第 1 轮](./docs/design-options-2026-10-03/qa-comparison-pass1.jpg) 与 [第 2 轮](./docs/design-options-2026-10-03/qa-comparison-pass2.jpg) 共同对照；第 2 轮确认这些问题已修复，同时发现下一项。 |
-| 2 | P2：博士位置偏低，生命条标题被舌面遮挡；奖励文字相较源图偏小。 | 博士图使用上方对齐，桌面生命条放到角色容器 58% 高度；奖励文字增至最多 39 px，红色与紫色描边分别强调两部分。 | [第 3 轮](./docs/design-options-2026-10-03/qa-comparison-pass3.jpg)：生命条标题、惊慌表情和大字号奖励文字清楚，嘴内答案完整显示。 |
-| 3 | P2：反噬高峰时喷射顶部仍轻微盖住台词；附加状态检查中，结算副文案靠近题纸下沿。 | 桌面喷射从 top 14% / height 38% 改为 20% / 32%，保持出口底部位置，收紧上沿；手机从 13% / 33% 改为 18% / 28%；首页与结算标题 line-height 改为 1.1，缩小上下间距。 | [第 4 轮](./docs/design-options-2026-10-03/qa-comparison-pass4.jpg) 中台词与喷射分离；[最终桌面结算](./docs/design-options-2026-10-03/production-victory-desktop-final.jpg)、[手机结算](./docs/design-options-2026-10-03/production-victory-mobile-final.jpg) 中题纸文案完整。 |
-| 4 | 无新增可操作的 P0 / P1 / P2。 | 不再修改视觉。 | 全图、原始密度局部、桌面/平板/手机及完整通关检查通过。 |
+| 1 | 中文 fallback 未提供目标字重，主标题与章节标题过细 | P1 | 本地 Noto Sans SC Variable、中文字体栈和主标题 900 字重；[第一轮对照](./docs/website-concepts-2026-10-04/qa/comparison-pass1.png) 与最终共同对照可直接比较 |
+| 1 | 吉祥物标记靠近次要按钮，下滑提示落在浅色边缘 | P2 | 桌面吉祥物下移；下滑提示移至蓝色区域，提高文字对比度 |
+| 2 | 手机端吉祥物标记与学习按钮重叠 | P2 | 390 px 首屏 624 px、吉祥物宽 280 px；320 px 首屏 592 px、吉祥物宽 252 px；[修复前](./docs/website-concepts-2026-10-04/qa/mobile390-pass1.jpg)、[修复后](./docs/website-concepts-2026-10-04/qa/mobile390-final.jpg) |
+| 3 | 字重、按钮间距、品牌和游戏入口共同复核 | — | 最终共同对照中两行标题、C 吉祥物、弧面与浅色内容顺序成立；无重叠、丢失图片或横向溢出 |
 
-另有运行检查发现 P1 React 重复 key：嘴内答案与反噬素材使用相同数字 key。已经改成带会话和题号的不同前缀；生产版本真实 20 题与重开后，warning / error 日志为空。平板进度圆点的伸长也已改为 aspect-ratio: 1，最终平板截图显示正确圆点。
+生成的弧面背景与概念图的光照、弧线不同；使用真实游戏截图后细节密度不同。这些属于实现素材与新增内容的定稿差异，保留钴蓝主面、品牌蓝按钮、浅色画布和原 Logo 中的小面积彩色标记。
 
-## 五项必查表面
+## 真实交互验证
 
-| 表面 | 对照结论 |
-| --- | --- |
-| 字体与排版 | 题目与按键使用自托管 Baloo 2，800 字重、圆润数字；已通过 document.fonts.check 检查。深靛蓝大题目、薄荷题格、较小辅助文案的层级与源图一致。桌面题目最高 120 px，手机随视口缩放。中文使用 Microsoft YaHei / PingFang SC 等系统字体；无法从生成图确认精确中文字体，现有形态与字号可读。共同局部对照确认无数字挤压、断行或截断。 |
-| 间距与布局 | 宽舞台上有左侧乐器助手、中央机器、右侧博士，前景舌面和两排五列数字键。工具位于桌面键盘右侧、手机键盘下方。音乐条、生命条、连击、题格各自保持阅读区域，反噬避开台词和算式；收紧标题后首页及结算文案在题纸内。实际控制区域比原稿保留更多触控空间，属于可接受的交互调整。 |
-| 颜色与视觉 token | 靛蓝 #171544、奶油 #fffbed、薄荷题格 #c5f7dc、珊瑚机器、粉色舌面及紫色背景保持源图色彩关系。正确位使用薄荷色，错误当前位使用粉色边框并显示文字；静音、减少动态、提示有 pressed 状态；禁用工具减弱显示但保留文字。没有以颜色作为唯一判定提示。 |
-| 图片与素材 | 博士两种表情、机器、舌面、反噬、乐器助手、数字泡泡和连击徽章均为独立原创 PNG。透明边缘、清晰度、比例和裁切已查看；所有运行图像 complete 且 naturalWidth > 0。没有用整张设计稿替代交互，也没有用手写 SVG / CSS / emoji 代替角色与非标准插画。标准操作图标来自真实图标库；品牌文字保留 Cici 与小博士。 |
-| 文案与内容 | 「大舌头出题机」「疯狂博士」「我的机器怎么了？！」「答对了！机器反噬！」「喂入数字，答对反击」与确认方向一致。错误文案说明已正确数字会保留；提示只给思路。首页明确 20 以内加减法、不计时、可重试；结算明确 20 题、最高连击与首次答对率，运行内容由真实状态提供。 |
+- 开始游戏悬停：实际移动鼠标，测得 `.game-launch` 从无变换变为 `matrix(1.06, 0, 0, 1.06, 0, -2)`；[悬停截图](./docs/website-concepts-2026-10-04/qa/desktop-hover.jpg)。
+- 学习回顾：展开口算示例得到 `7 + 8 = 15` 与凑十说明；下一项切换至错题回顾，ArrowRight 切换至下一局建议。组件有真实标签、tabpanel、按钮；[桌面学习](./docs/website-concepts-2026-10-04/qa/desktop-learning.jpg)、[窄屏学习](./docs/website-concepts-2026-10-04/qa/mobile320-learning.jpg)。
+- 手动打卡：0 → 1 天；按钮变为禁用的「已打卡，明天见」。目标改为每周 5 天；刷新仍为 1 / 5、当天已打卡，不重复计数。[桌面打卡](./docs/website-concepts-2026-10-04/qa/desktop-checkin.jpg)、[手机打卡](./docs/website-concepts-2026-10-04/qa/mobile390-checkin.jpg)。
+- 手机菜单：打开、Escape 关闭、再次打开并选择每日打卡后关闭；`aria-expanded` 随状态更新。
+- 320、390、834、1086 和 1440 px 布局检查。320 / 390 / 834 内容宽度为 305 / 375 / 819 px，均等于文档 scrollWidth。窄屏七天圆点均在面板内；[320 首屏](./docs/website-concepts-2026-10-04/qa/mobile320-final.jpg)、[平板](./docs/website-concepts-2026-10-04/qa/tablet834-final.jpg)。
+- 口算实际输入 20 个正确答案，包含 0、两位数、加法与减法；结算为 2000 分、100%、20 题。返回首页后为完成 1 局、连续 1 天、当天已打卡，卡片显示最近玩过、再来一局。
+- 新生产预览跑酷完成 12 道判定，覆盖超时和键盘选择错误答案；基础复盘显示本局得分、0% 正确率、12 题、实际薄弱单词与错题记录。重玩清除报告并开始新局，立即返回首页仍仅记 1 局。未手动打卡的生产预览从 0 天变为自动打卡 1 天。[跑酷结算](./docs/website-concepts-2026-10-04/qa/neon-completed.jpg)、[实测记录](./docs/website-concepts-2026-10-04/qa/gameplay-evidence.json)。
+- 新生产预览浏览器 error / warn 日志为空。
 
-## 交互、响应式与可访问性
+## 程序检查与实际限制
 
-- 真实 UI 逐位输入、两位数、错误后保持十位、删除、提示、键盘数字、静音、背景音乐音量、减少动态均已操作。
-- [首次生产流程](./docs/design-options-2026-10-03/browser-production-playthrough.json) 首题错误后通过键盘重试，20 题后结果为 95%；[最终构建流程](./docs/design-options-2026-10-03/production-final-playthrough.json) 20 题全部正确，结果为 100%。生命值分别逐题减少至 0、六种乐器点亮、结算与重开正确。
-- [默认桌面首页](./docs/design-options-2026-10-03/production-menu-desktop-final.jpg)：1280 × 720。
-- [平板首页](./docs/design-options-2026-10-03/production-tablet-menu-final.jpg)：768 × 1024。
-- [手机反噬](./docs/design-options-2026-10-03/production-mobile-backlash-final.jpg) 与 [手机结算](./docs/design-options-2026-10-03/production-victory-mobile-final.jpg)：390 × 844。
-- [小手机答题](./docs/design-options-2026-10-03/production-small-phone-final.jpg)：320 × 740。document.scrollWidth 为 320，无横向溢出；全部按钮的较小边约 44 px 或以上（浏览器几何误差读数 43.998 px），数字键更大。
-- 语义 button/link、数字键名称、生命 meter、进度 progressbar、提示 pressed、播报 status 和焦点轮廓齐全。结算自动聚焦「再战一局」，数字支持键盘，减少动态禁止飞行与抖动。
-- 生产音频状态为 ready；音乐试听页面通过首页真实链接在生产构建中打开，页面控件完整，日志为空。没有重新执行此前音频研究中的 54 秒全曲导出，将其作为已有功能保留。
-- 最终构建完成一次完整 20 题、重开、手机反噬与回首页后，浏览器 warning/error 日志为空。
-- 浏览器临时视口在交付前已 reset，恢复默认尺寸。
+- `npm test`：11 个文件，80 项全部通过。新增 9 项覆盖会话去重、同日打卡、连续天数、周日与跨月、闰日、无答题局、损坏或禁用存储、目标保存。
+- `npm run build`：主站与独立跑酷 TypeScript 检查、生产构建通过。仍提示原有跑酷 1.47 MB JavaScript 分块较大；主站入口约 192 KB、gzip 67 KB。
+- `git diff --check` 通过，仅有 Windows 换行转换提示。
+- 减少动态效果通过源码检查：GSAP matchMedia 与 CSS media query 关闭或缩短对应动画。当前浏览器能力未提供此系统设置模拟，未声称完成该分支的浏览器动态实测。
+- 初始 4173 预览进程缓存旧配置，POST 学习总结返回空响应；未改动游戏或 API 来绕过问题。新 4174 预览确认 API 对 GET 返回规范 JSON 405，并通过完整跑酷结算验证基础复盘；5173 开发服务也确认 API 正常。
+- 打卡为当前设备的真实本地记录，暂无账号与跨设备同步。在线 AI 未连接时沿用明确标注的基础复盘。
 
-## 验证与后续润色
-
-`npm test`：47 项通过。`npm run build`：全项目 TypeScript 检查与生产构建通过。自动检查用于功能与工程验证，不计入上述四轮视觉迭代。
-
-P3：生成稿的中文圆体无法精确识别，当前系统字体已读得清楚，后续可另选并自托管授权中文圆体；分层 PNG 与原稿有笔触差别，保持相同角色主题与色彩。没有未完成的必要实施项。
-
-实施清单：已连接真实状态、完成素材分层、修复 P0/P1/P2、完成共同图像对照、记录响应式和真实通关、保存本报告，保留可玩本地预览。
-
-final result: passed
+主要预览：`http://localhost:5173/`。实现说明见 [IMPLEMENTATION.md](./docs/website-concepts-2026-10-04/IMPLEMENTATION.md)。

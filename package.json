@@ -19,10 +19,14 @@
     "intro:render": "remotion render src/intro/index.tsx NeonRunnerIntro public/intro.mp4"
   },
   "dependencies": {
+    "@fontsource-variable/geist": "^5.3.0",
+    "@fontsource-variable/noto-sans-sc": "^5.3.0",
+    "@gsap/react": "^2.1.2",
     "@phosphor-icons/react": "^2.1.10",
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.1",
     "@remotion/cli": "^4.0.532",
+    "gsap": "^3.15.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "remotion": "^4.0.532",

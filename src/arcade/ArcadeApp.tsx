@@ -1,40 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { ArrowLeft, ArrowRight, ArrowsOut, GameController, Lightning, Sparkle } from '@phosphor-icons/react'
+import { ArrowLeft, ArrowsOut } from '@phosphor-icons/react'
 import { games } from './games'
 import type { ArcadeGame } from './games'
 import { RoundReport } from './RoundReport'
 import { isGameSession, isLearningReport } from './session'
 import type { AiSummary, GameSession } from './session'
-
-function GameArtwork({ game }: { game: ArcadeGame }) {
-  if (game.id === 'neon') {
-    return <div className="game-art game-art-neon" aria-hidden="true">
-      <img src="/assets/arcade/neon-preview.png" alt="" />
-      <span className="art-caption">RUN FAST. THINK FASTER.</span>
-    </div>
-  }
-  return <div className="game-art game-art-math" aria-hidden="true">
-    <img className="art-stage" src="/assets/festival/laboratory-stage-clean.png" alt="" />
-    <img className="art-machine" src="/assets/festival/tongue-machine.png" alt="" />
-    <img className="art-doctor" src="/assets/festival/doctor-idle.png" alt="" />
-    <span className="art-answer">7 + 8 = <b>?</b></span>
-  </div>
-}
-
-function GameCards() {
-  return <div className="game-grid">
-    {games.map((game) => <a key={game.id} className={`game-card game-card-${game.id}`} href={game.path} aria-label={`开始游戏：${game.name}`}>
-      <GameArtwork game={game} />
-      <div className="game-card-copy">
-        <p className="game-category"><Lightning size={14} weight="fill" />{game.category}</p>
-        <h2>{game.name}</h2>
-        <p className="game-subtitle">{game.subtitle}</p>
-        <p className="game-description">{game.description}</p>
-        <div className="game-card-bottom"><span>{game.detail}</span><span className="play-link">开始游戏 <ArrowRight size={18} weight="bold" /></span></div>
-      </div>
-    </a>)}
-  </div>
-}
+import { recordCompletedRound } from './activity'
+import { GameCards } from './GameCards'
+import { HomePage } from './HomePage'
+import { MotionLink } from './MotionLink'
+import { SiteHeader, SiteFooter } from './SiteChrome'
 
 function GamePage({ game }: { game: ArcadeGame }) {
   const frameContainer = useRef<HTMLDivElement>(null)
@@ -79,6 +54,7 @@ function GamePage({ game }: { game: ArcadeGame }) {
         const round = event.data.session
         if (round.gameId !== game.id || round.sessionId === lastRound.current) return
         lastRound.current = round.sessionId
+        recordCompletedRound(round)
         setSession(round)
         void summarize(round)
       }
@@ -124,23 +100,14 @@ export default function ArcadeApp() {
     document.title = game ? `${game.name} · CiciArcade` : lobby ? '游戏大厅 · CiciArcade' : home ? 'CiciArcade · 把练习玩成冒险' : '页面未找到 · CiciArcade'
   }, [game, home, lobby])
 
-  return <div className="arcade-app">
+  return <div className={'arcade-app' + (game ? ' arcade-app-play' : home ? ' arcade-app-home' : ' arcade-app-lobby')}>
     <a className="skip-link" href="#main">跳到主要内容</a>
-    <header className="arcade-header">
-      <a className="arcade-brand" href="/" aria-label="CiciArcade 首页"><span className="brand-controller"><GameController size={26} weight="duotone" /></span><b>Cici<span>Arcade</span></b></a>
-      <nav aria-label="主导航"><a href="/" aria-current={home ? 'page' : undefined}>首页</a><a href="/games" aria-current={lobby || game ? 'page' : undefined}>游戏大厅 <ArrowRight size={16} /></a></nav>
-    </header>
-
-    {game ? <GamePage game={game} /> : home || lobby ? <main id="main" className="arcade-main">
-      {home ? <section className="home-intro" aria-labelledby="home-title">
-        <div><h1 id="home-title">把练习，<br /><span>玩成冒险。</span></h1><p>一个可以接入 AI 导师的开源教育游戏平台。</p><a className="lobby-link" href="/games">进入游戏大厅 <ArrowRight size={19} weight="bold" /></a></div>
-        <div className="intro-note"><Sparkle size={44} weight="duotone" aria-hidden="true" /><p>玩一局。<br />懂一点。<br /><span>再来一局。</span></p><span>每次冒险，都有新的收获 ↓</span></div>
-      </section> : <section className="lobby-intro"><h1>游戏大厅</h1><p>去实验室挑战口算，或在霓虹城市里闯过单词关。</p></section>}
-      {home && <div className="games-heading"><h2>今天，玩点什么？</h2><span>两个世界，随你出发</span></div>}
+    <SiteHeader home={home} playing={Boolean(game)} />
+    {game ? <GamePage game={game} /> : home ? <HomePage /> : lobby ? <main id="main" className="lobby-page page-width">
+      <section className="lobby-heading"><p>保持好奇，马上开玩。</p><h1>选一个世界，<br /><span>开始今天的冒险。</span></h1><p>去实验室挑战口算，或在霓虹城市里闯过单词关。</p></section>
       <GameCards />
-      <section className="learn-next" aria-labelledby="learn-next-title"><div className="learn-next-title"><Sparkle size={28} weight="duotone" /><h2 id="learn-next-title">通关之后，还有下一步。</h2><p>成绩告诉你这一局玩得怎样，学习总结帮你找到下一局的方向。</p></div><div className="learn-next-steps"><div><span>PLAY</span><h3>选一个世界</h3><p>口算实验室，或霓虹单词跑酷。点开就玩。</p></div><div><span>LEARN</span><h3>带走你的收获</h3><p>结束后查看成绩、错题和学习建议。</p></div><div><span>REPLAY</span><h3>下一局，更有方向</h3><p>复习一个知识点，把新想法用到游戏里。</p></div></div></section>
-    </main> : <main id="main" className="arcade-main missing-page"><h1>这个关卡还没开放。</h1><p>回到游戏大厅，选择一个游戏继续冒险。</p><a className="lobby-link" href="/games">返回游戏大厅 <ArrowRight size={19} /></a></main>}
-
-    {!game && <footer className="arcade-footer"><span>CiciArcade</span><p>保持好奇，继续开玩。</p><span>开源教育游戏平台</span></footer>}
+      <div className="lobby-checkin-link"><span>每次出发，都算进步。</span><MotionLink href="/#daily-checkin" variant="quiet">看看我的学习足迹</MotionLink></div>
+    </main> : <main id="main" className="page-width missing-page"><h1>这个关卡还没开放。</h1><p>回到游戏大厅，选择一个游戏继续冒险。</p><MotionLink href="/games">返回游戏大厅</MotionLink></main>}
+    {!game && <SiteFooter />}
   </div>
 }
