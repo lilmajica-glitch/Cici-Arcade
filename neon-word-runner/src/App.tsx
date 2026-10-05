@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { EventBus } from './game/EventBus';
 import { PhaserGame } from './game/PhaserGame';
 import { DEFAULT_RUN_OPTIONS, type RunOptions, type RunResult } from './types/game';
+import { createSessionId } from '../../src/arcade/session';
 
 type Screen = 'home' | 'playing' | 'settings' | 'results';
 const OPTIONS_KEY = 'neon-word-runner:options';
@@ -38,19 +39,41 @@ function App() {
   const [ready, setReady] = useState(false);
   const [options, setOptions] = useState<RunOptions>(loadOptions);
   const [result, setResult] = useState<RunResult | null>(null);
+  const sessionId = useRef('');
+
+  const sendToArcade = (message: object) => {
+    if (window.parent !== window) window.parent.postMessage(message, window.location.origin);
+  };
 
   const handleReady = useCallback(() => setReady(true), []);
 
   useEffect(() => EventBus.on('game:end', (runResult) => {
     setResult(runResult);
     setScreen('results');
+    sendToArcade({ type: 'ciciarcade:end', session: {
+      sessionId: sessionId.current, gameId: 'neon', gameName: 'Neon Word Runner',
+      score: runResult.score, accuracy: runResult.accuracy,
+      wrongAnswers: runResult.wrongAnswers, durationSeconds: Math.round(runResult.durationMs / 1000),
+      answeredCount: runResult.correct + runResult.wrong,
+    } });
   }), []);
 
-  const startRun = () => {
+  const startRun = useCallback(() => {
+    sessionId.current = createSessionId('neon');
+    sendToArcade({ type: 'ciciarcade:start', gameId: 'neon' });
     setResult(null);
     setScreen('playing');
     EventBus.emit('game:start', options);
-  };
+  }, [options]);
+
+  useEffect(() => {
+    const replay = (event: MessageEvent) => {
+      if (event.origin === window.location.origin && event.source === window.parent
+        && event.data?.type === 'ciciarcade:replay' && event.data.gameId === 'neon') startRun();
+    };
+    window.addEventListener('message', replay);
+    return () => window.removeEventListener('message', replay);
+  }, [startRun]);
 
   const updateOptions = (next: RunOptions) => {
     setOptions(next);

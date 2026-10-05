@@ -4,4 +4,7 @@ dist/
 coverage/
 *.local
 *.log
+.env
+.env.*
+!.env.example
 artifacts/audio/*.wav

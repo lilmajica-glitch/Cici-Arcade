@@ -283,6 +283,7 @@ export class Game extends Scene {
       maxCombo: this.combo.maxCombo,
       wordsReviewed: stats?.wordsReviewed ?? 0,
       durationMs: Math.min(this.elapsedMs, 85_000),
+      wrongAnswers: [...(this.vocabulary?.wrongAnswers ?? [])],
     };
     EventBus.emit('game:end', result);
   };

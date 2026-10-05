@@ -1,5 +1,6 @@
 import type { ParkourAction } from './PlayerStateMachine';
 import type { QuestionDirection } from '../../types/game';
+import type { WrongAnswer } from '../../../../src/arcade/session';
 
 export interface VocabularyEntry {
   id: string;
@@ -46,6 +47,7 @@ export class VocabularySystem {
   private correctCount = 0;
   private wrongCount = 0;
   private readonly reviewed = new Set<string>();
+  readonly wrongAnswers: WrongAnswer[] = [];
 
   constructor(
     entries: readonly VocabularyEntry[],
@@ -114,7 +116,15 @@ export class VocabularySystem {
     const question = this.current!;
     const correct = chosenIndex === question.correctIndex;
     if (correct) this.correctCount += 1;
-    else this.wrongCount += 1;
+    else {
+      this.wrongCount += 1;
+      this.wrongAnswers.push({
+        question: question.prompt,
+        userAnswer: chosenIndex === null ? '未作答（超时）' : question.choices[chosenIndex],
+        correctAnswer: question.choices[question.correctIndex],
+        knowledgePoint: `${question.english} 的词义与识别`,
+      });
+    }
     this.current = null;
     return {
       correct,

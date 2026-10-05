@@ -1,18 +1,20 @@
 {
-  "name": "cici-doctor",
+  "name": "ciciarcade",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.0.0",
   "type": "module",
   "engines": {
-    "node": ">=22.12.0"
+    "node": ">=22.18.0"
   },
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "tsc --noEmit && vite build",
+    "build": "npm run typecheck && vite build",
     "preview": "vite preview --host 0.0.0.0",
+    "start": "node --env-file-if-exists=.env --env-file-if-exists=.env.local server/index.ts",
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && npm --prefix neon-word-runner run typecheck",
+    "postinstall": "npm --prefix neon-word-runner ci",
     "intro:preview": "remotion studio src/intro/index.tsx",
     "intro:render": "remotion render src/intro/index.tsx NeonRunnerIntro public/intro.mp4"
   },

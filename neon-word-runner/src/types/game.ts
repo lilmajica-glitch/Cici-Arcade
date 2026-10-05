@@ -14,6 +14,7 @@ export interface RunResult {
   maxCombo: number;
   wordsReviewed: number;
   durationMs: number;
+  wrongAnswers: import('../../../src/arcade/session').WrongAnswer[];
 }
 
 export const DEFAULT_RUN_OPTIONS: RunOptions = {
